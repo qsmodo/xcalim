@@ -68,7 +68,7 @@ Qsmodo <github.com/qsmodo>
 1: I would keep the name Xcal but it clashes with various unrelated software.
 Xcalim, on the other hand, seems unused.  
 2: I made a `sed s/xcal/xcalim/` so mentions of the original Xcal were
-unintendedly changed. I have tried to track them down and fix them.
+unintendedly changed. I have tried to track them down and fix them.  
 3: There is some leftover code from Xcal laying around. I'll try to remove it as
 I go.
 
