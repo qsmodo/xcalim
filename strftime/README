@@ -1,0 +1,10 @@
+The xcalim program now uses strftime to create dates and time strings.
+
+I include the Net II version here, just in case you don't have it on
+your system.
+
+I would guess that it will need some work to make it compile in a
+non BSD environment.
+
+The program `ptime' here is a test bed for the strftime routine.
+See ../README.install for more information.

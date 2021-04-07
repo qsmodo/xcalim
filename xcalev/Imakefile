@@ -1,0 +1,10 @@
+DEFINES=-DVER_VEC
+
+BINDIR=/usr/local/bin
+INSTPGMFLAGS=$(INSTBINFLAGS)
+
+AllTarget(xcalev)
+
+SimpleProgramTarget(xcalev)
+
+DependTarget()

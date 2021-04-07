@@ -1,0 +1,28 @@
+Note from Peter Collinson:
+
+On my 4.1.3 system running OpenWindows III.  I get an apparent problem
+when xcalim is loaded, it says:
+
+cc -o xcalim -O xcalim.o xcalim_alarm.o xcalim_buts.o xcalim_edit.o xcalim_help.o
+	xcalim_popup.o xcalim_strip.o xcalim_memo.o strfdate.o version.o -lXaw -lXmu
+	-lXt -lXext -lX11 -lm 
+
+ld: Undefined symbol
+   _get_wmShellWidgetClass
+   _get_applicationShellWidgetClass
+collect: /usr/bin/ld returned 2 exit status
+*** Error code 1
+make: Fatal error: Command failed for target `xcalim'
+
+This is something to do with shared libraries and -lXmu.
+
+EVEN with this message, xcalim runs happily. 
+
+So - ignore the message above - OR change the Makefile from
+
+	$(CC) -o $@ $(LDOPTIONS) $(OBJS1)  $(XAWLIB) $(XMULIB) $(XTOOLLIB) $(XLIB) $(LDLIBS)  -lm $(EXTRA_LOAD_FLAGS)
+to
+
+	$(CC) -o $@ $(LDOPTIONS) $(OBJS1)  $(XAWLIB) -Bstatic $(XMULIB) -Bdynamic $(XTOOLLIB) $(XLIB) $(LDLIBS)  -lm $(EXTRA_LOAD_FLAGS)
+
+and things will be OK.

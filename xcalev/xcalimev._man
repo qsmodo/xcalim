@@ -1,0 +1,180 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.TH XCALEV 1 "October 1993" "X Version 11 R5"
+.SH NAME
+xcalev \- load xcalim calendar files with regular dates
+.SH SYNTAX
+.B xcalev
+[
+.B \-r
+][
+.B \-x
+][
+.B \-f
+file
+][
+.B \-d
+.I dir
+][
+.I year
+]
+.SH DESCRIPTION
+.I Xcalev
+is used to preload the calendar files for the
+.I xcalim
+program with regular events in your life.
+It reads lines from a file (usually called 
+.B regular
+stored in your
+.B Calendar
+directory.
+Each line in the file contains three fields separated by
+spaces or tabs, these are:
+a month name, a day in the month and some text.
+For example:
+.br
+.nf
+
+	December 25	Christmas
+	Dec 31		New Year's Eve
+.fi
+.LP
+The order of the month and the day are optional, the program deduces the day
+by looking whether the string contains an initial numeric character or not.
+The year defaults to the current year unless the program is given a year
+number as an argument.
+This year cannot be abbreviated to two digits because
+.I xcalim
+ deals with years from year zero.
+There's a rough validity check on this.
+.LP
+The string from the data line
+is inserted in the appropriate file and will appear in your
+.I xcalim
+date strip.
+Nothing will happen if the string already exists in the file for that day.
+This means that it's safe to run 
+.I xcalev
+at any time, only the strings that have altered in the 
+.B regular
+file
+will be updated.
+.LP
+To help with entering the same event for a number of days in one month, you
+can give a day range with a hyphen
+.br
+.nf
+	Jan 16-21	Usenix SF
+.fi
+.LP
+If you supply the
+.I \-r
+option,
+.I xcalev
+will delete all the matching strings that it finds in the appropriate daily file.
+So, if you want to make radical changes to the
+.B regular
+file, you
+should run
+.I xcalev
+with the
+.I \-r
+option to remove all the current
+entries from one year, edit the
+.B regular
+file and run
+.I xcalev
+to reload things.
+.SH OPTIONS
+.LP
+The
+.I \-r
+option makes 
+.I xcalev
+delete rather than append entries.
+.LP
+The
+.I \-x
+option makes
+.I xcalev
+operate with Calendar files that are compatible
+with the
+.I xcalendar
+program.
+.LP
+The
+.I \-f
+switch is followed by a filename gives an alternative name for the
+.B regular
+file.
+If the filename does not start with a slash or a dot, then the name of
+your Calendar directory will be prepended to it.
+.LP
+The
+.I \-d
+switch is followed by a directory name and specifies an alterative
+location for your Calendar directory.
+Your home directory is prepended if the name doesn't start with a slash
+or a dot.
+.SH FILES
+.PP
+$HOME/Calendar/\(**
+.LP
+.TP "\w'xc<dd><Mon><Year>  'u"
+xc<dd><Mon><Year>
+A data file is day, Month in three letter format and the year.
+.TP
+xy<Year>
+A year directory.
+.TP
+xw<Day>
+A data file for the weekly code, one per day.
+.SH SEE ALSO
+xcalim(1), xcalpr(1), xcalim_cal(1)
+.SH AUTHOR
+.LP
+Copyright 1993 by Peter Collinson, Hillside Systems
+All rights reserved.
+

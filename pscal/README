@@ -1,0 +1,18 @@
+This is a version of the pscal program that pretty prints calendars.
+I have modified it to work from xcalim data files stored in ~/Calendar.
+
+If you are in the USA - you might like to edit pscal.script to revert
+page translation back to your paper size:
+
+Change:
+
+TRANSLATE="71 -120"
+
+to
+
+TRANSLATE="50 -120"
+
+This has also been worked on by David Kotz who added the -d <directory>
+feature and made it work on an old version of the Bourne shell that
+doesn't grok shell statements like: shift 5
+

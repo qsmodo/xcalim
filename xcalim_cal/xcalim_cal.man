@@ -1,0 +1,51 @@
+.TH XCALim_CAL 1
+.SH NAME
+xcalim_cal \- interface to calendar(1) for xcalim
+.SH SYNOPSIS
+.B xcalim_cal
+[
+.B \-d
+directory
+] [
+.B \-f
+file
+] [
+.B \-m
+] [
+.B \-#
+]
+.SH DESCRIPTION
+.I Xcalim_cal
+reads through the files created by
+.IR xcalim (1)
+and creates a file suitable for use by
+.IR calendar (1).
+By default, the files are found in a directory named
+``Calendar'' in the user's home directory;
+an alternate directory may be specified with the
+.B \-d
+flag.
+.LP
+Output goes by default into a file named ``.xcalim''
+in the user's home directory;
+it may be overridden with the
+.B \-f
+flag.
+In both cases, if the argument given begins with a slash (`/'),
+then it will be taken as a full path name, not as a path relative to the
+user's home directory.
+If the argument begins with the two character sequence `./' then
+it will be taken relative to the current directory.
+This last form is primarily intended for use while debugging.
+.LP
+The
+.B \-m
+flag directs that multi-line entries in
+.I xcalim
+files be collected in their
+entirety.
+By default, only the first line is copied.
+.SH "SEE ALSO
+xcalim(1),xcalev(1),xcalpr(1)
+.SH AUTHOR
+Ed Gould, Mt.Xinu. Thanks Ed.

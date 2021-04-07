@@ -1,0 +1,8 @@
+BINDIR=/usr/local/bin
+
+INSTPGMFLAGS=$(INSTBINFLAGS)
+
+AllTarget(xcalim_cal)
+SimpleProgramTarget(xcalim_cal)
+
+DependTarget()

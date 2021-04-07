@@ -1,0 +1,127 @@
+!Override values in a X-resources file in your home directory 
+!Use Editres to find the widget structure
+!	Data format strings
+!XCalim.editFmt: %A %e %B %Y
+!XCalim.already: Already editing %e %B %Y
+!
+!	Geometry
+XCalim.edit.geometry: 325x150
+XCalim.memo.geometry: 325x300
+XCalim.alarm.geometry: 325x100+0+150
+XCalim*help.geometry: 600x300
+!
+! Fonts: Use xfontsel or xlsfonts to change these
+XCalim*Font:              -*-helvetica-bold-r-*-*-17-*-*-*-*-*-*-*
+XCalim*header*Font:       -*-new century schoolbook-bold-r-*-*-14-*-*-*-p-*-*-*
+XCalim*title*Font:        -*-new century schoolbook-bold-r-*-*-14-*-*-*-p-*-*-*
+XCalim*memo*Command*Font: -*-new century schoolbook-bold-r-*-*-14-*-*-*-p-*-*-*
+XCalim*info.Font:         -*-new century schoolbook-medium-r-*-*-14-*-*-*-p-*-*
+XCalim*helpText.Font:     -misc-fixed-medium-r-normal--15-*-*-*-*-*-*-*
+XCalim*alarmText*Font:    -*-charter-medium-r-*-*-33-*-*-*-p-*-*-*
+!
+! Top level dialogs
+XCalim*newdate.Label: Enter mmm yyyy?
+XCalim*newdate.ok.Label: OK
+XCalim*newdate.cancel.Label: Cancel
+XCalim*newdate.cancel.Label: Cancel
+XCalim*exit.Label: Really exit?
+XCalim*exit.yes.Label: Yes
+XCalim*exit.no.Label: No
+XCalim*noedit.ok.Label: OK
+!
+! Strips & edit windows
+XCalim*header.back.Label: <
+XCalim*header.delete.Label: Delete
+XCalim*header.memo.Label: Memo
+XCalim*header.weekly.Label: Weekly
+XCalim*header.current.Label: Current
+XCalim*header.next.Label: >
+XCalim*help.Label: Help
+XCalim*quit.Label: Quit
+XCalim*save.Label: Save
+XCalim*delete.Label: Delete
+XCalim*text.scrollVertical: WhenNeeded
+XCalim*text.scrollHorizontal: WhenNeeded
+XCalim*text.autoFill: True
+! Popups from the edit windows
+XCalim*check.Label: Save file?
+XCalim*check.yes.Label: Yes
+XCalim*check.no.Label: No
+XCalim*check.cancel.Label: Cancel
+! Alarms
+XCalim*alarmText*scrollVertical: WhenNeeded
+XCalim*alarmText*wrap: word
+XCalim*alarmHold.Label: Stick
+! Memo box
+XCalim*display.scrollVertical: WhenNeeded
+XCalim*display.scrollHorizontal: WhenNeeded
+XCalim*display.cursor: dot
+XCalim*memoTitle.Label: Edit the memo file
+XCalim*weeklyEdit.Label: Edit
+XCalim*weeklyTitle.Label: Today's regular events
+XCalim*edit.Label: Edit
+XCalim*memocheck.Label: Save memo file?
+XCalim*memocheck.yes.Label: Yes
+XCalim*memocheck.no.Label: No
+XCalim*memocheck.cancel.Label: Cancel
+XCalim*memoText.scrollVertical: WhenNeeded
+XCalim*memoText.scrollHorizontal: WhenNeeded
+!  Help
+XCalim*helpText.scrollVertical: Always
+XCalim*helpText.scrollHorizontal: WhenNeeded
+XCalim*helpText.autoFill: True
+XCalim*help*helpQuit.Label: Quit
+!  Translations (i.e., keyboard/mouse shortcuts). NOTE no spaces after the last
+!  backslash! Actions can be found in the Athena Widget Set webpage, see manual
+!These two are for scrollbars. I don't fully understand them, so see the next
+!block for something more understandable.
+XCalim*helpText.Translations: #override\
+    <Key>k:       scroll-one-line-down()                  \n\
+    <Key>Up:      scroll-one-line-down()                  \n\
+    <Key>Down:    scroll-one-line-up()                    \n\
+    <Key>j:       scroll-one-line-up()
+
+XCalim*helpText.?.Translations: #override\
+    <Btn1Down>:   StartScroll(Continuous) MoveThumb(\|)   \n\
+    <Btn1Motion>: MoveThumb(\|) NotifyThumb(\|)           \n\
+    <BtnUp>:      NotifyScroll(Proportional) EndScroll(\|)
+!Use Ctrl+d to delete a file instead of Ctrl+Shift+d. You would need to read the
+!source to figure the correct action, PressAButton. I may document this in the
+!future if someone ever uses Xcalim
+!XCalim*edit*text.Translations: \override
+!Ctrl ~Shift <Key>d : PressAButton(1)
+
+! Header button shapes, give it a try! Also oval and ellipse. Default: rectangle
+! XCalim*header.Command.shapeStyle: roundedRectangle
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!   Colourful Xcalim
+!Use Xcolorsel to find available colors aliases 
+!or provide them as RGB values: #RRGGBB
+XCalim*Sun*foreground: red
+!XCalim.MarkBackground:		wheat1
+!XCalim*foreground:		black
+!XCalim*quit.foreground:		black
+!XCalim*quit.background:		wheat2
+!XCalim*edit.foreground:		black
+!XCalim*edit.background:		wheat2
+!XCalim*weeklyEdit.foreground:	black
+!XCalim*weeklyEdit.background:	wheat2
+!XCalim*next.foreground:		black
+!XCalim*next.background:		wheat2
+!XCalim*back.foreground:		black
+!XCalim*back.background:		wheat2
+!XCalim*help.foreground:		black
+!XCalim*help.background:		wheat2
+!XCalim*save.foreground:		black
+!XCalim*save.background:		wheat2
+!XCalim*yes.foreground:		black
+!XCalim*yes.background:		wheat2
+!XCalim*no.foreground:		black
+!XCalim*no.background:		wheat2
+!XCalim*helpQuit.foreground:	black
+!XCalim*helpQuit.background:	wheat2
+!XCalim*header.foreground:		black
+!XCalim*header.background:		wheat2
+!XCalim*Sun*Label*background:	wheat2
+!XCalim*Sat*Label*background:	wheat2

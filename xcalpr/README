@@ -1,0 +1,4 @@
+This is xcalpr - a program to print calendars out in text forms
+
+The program needs access to ../xcalim_days.c. I have a symlink to that
+file in this directory.

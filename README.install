@@ -1,0 +1,26 @@
+Then make the makefiles
+
+	xmkmf
+	make Makefiles
+
+then type
+
+	make derived  - this makes xcalim_help.h and xcalim_ad.h
+				  from XCalim.help and XCalim.ad. You
+				  may not need to do this step
+				  if the Makefile evaluates things in
+				  the correct order
+	make depend
+
+	make
+
+If that appears to compile (and if you are on a Sun see README.sunos), then
+
+	make install
+
+and type
+	xcalim
+
+To have NO help strings built in, change xcalim_help.h to read
+
+char helpdata[1];

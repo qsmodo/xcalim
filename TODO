@@ -1,0 +1,16 @@
+* Allow each appointment to have its unique set of countdown alarms. E.g.,
+apptt. 1 triggers at -50, -3, 0; apptt. 2 at -10, -5, 0.
+
+* A day 1D day strip view, such as [Ical][1]'s.  At least here the regular
+and specific day events must be shown together. This will be though to
+implement but ir is a must-have feature for me. 
+
++ Countdown timer.
+
+> Subwidgets on the edit window for selecting alarm times separatedly from
+the appointment description.
+
+> Unsensitize Weekly header button when the w shorcut is used.  This is
+already done by Help and Memo acts as a toggle.
+
+[1]: https://en.wikipedia.org/wiki/Ical_(Unix)#/media/File:Ical_(Unix)_screenshot.png

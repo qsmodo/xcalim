@@ -1,0 +1,45 @@
+/*
+ * Define InstallPsCal if you want to have pscal compiled and installed as
+ * part of the xcalim compilation and installation.
+ */
+#define InstallPsCal
+
+        DEFINES = -DLONG_IS_32_BITS -DVER_VEC
+		
+          SRCS1 = xcalim.c xcalim_alarm.c xcalim_buts.c xcalim_days.c xcalim_edit.c \
+		  xcalim_help.c xcalim_popup.c xcalim_strip.c xcalim_memo.c strfdate.c
+          OBJS1 = xcalim.o xcalim_alarm.o xcalim_buts.o xcalim_days.o xcalim_edit.o \
+		  xcalim_help.o xcalim_popup.o xcalim_strip.o xcalim_memo.o strfdate.o
+
+       PROGRAMS = derived xcalim
+   INSTPGMFLAGS = $(INSTBINFLAGS)
+         BINDIR = /usr/local/bin
+
+ComplexProgramTarget_1(xcalim, XawClientLibs, -lm)
+
+InstallAppDefaults(XCalim)
+InstallNonExec(XCalim.help, $(XAPPLOADDIR)/XCalim.help)
+
+derived:	xcalim_help.h xcalim_ad.h
+
+clean::
+	$(RM) xcalim_help.h xcalim_ad.h
+
+xcalim_help.h:	XCalim.help
+	sh C_from_help.sh
+
+xcalim_ad.h:	XCalim.ad
+	sh C_from_ad.sh
+
+#define PassCDebugFlags 'CDEBUGFLAGS=$(CDEBUGFLAGS)'
+
+#define IHaveSubdirs
+
+#ifdef InstallPsCal
+SUBDIRS = xcalpr xcalev xcalim_cal pscal
+#else
+SUBDIRS = xcalpr xcalev xcalim_cal
+#endif
+
+MakeSubdirs($(SUBDIRS))
+DependSubdirs($(SUBDIRS))

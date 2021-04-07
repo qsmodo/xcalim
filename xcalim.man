@@ -1,0 +1,518 @@
+.TH xcalim 1 "2021" "X11"
+.SH NAME
+xcalim \- calendar with alarms and a notebook for X11
+.SH SYNTAX
+.B xcalim
+[
+.B \-toolkitoptions
+][
+.B \-daemon
+][
+.B \-editformat
+.I format
+][
+.B \-clocktick
+.I tick
+][
+.B \-u
+.I user
+][
+.B \-alarmscan
+]
+.SH OPTIONS
+.LP
+.TP "\w'ReverseVideoMarkNNN'u"
+.B \-toolkitoptions
+Includes
+.IR \-bg ,
+.IR \-fg ,
+.IR \-rv ,
+.IR \-geometry ,
+see section OPTIONS of
+.I man\ 7\ X
+for information on them.
+.TP
+.B \-daemon
+don't launch the main window, only run alarm routines.
+.TP
+.BI \-editfmt " format"
+use 
+.I format 
+for dates in an edit window, e.g. %D.
+.TP
+.BI \-clocktick " tick"
+set to
+.I tick
+seconds the update time of the main window clock.
+.TP
+.BI \-u " user"
+View
+.IR user 's
+files, but with read-only access.
+.TP
+.B \-alarmscan
+print debugging information about the alarm system on standard output.
+.SH MAIN WINDOW
+.de EX		\"Begin example
+.ne 5
+.if n .sp 1
+.if t .sp .5
+.nf
+.ta +8u*\w'\0'u +8u*\w'\0'u +8u*\w'\0'u +8u*\w'\0'u +8u*\w'\0'u +8u*\w'\0'u
+..
+.de EE
+.fi
+.if n .sp 1
+.if t .sp .5
+..
+The 
+.IR main\ window 
+consists of a header bar and the calendar.
+A button in the header can be activated with a mouse click
+or by using a shortcut from the table:
+.EX
+    Button   Shortcut  Action
+    <        Left,  k  Previous month's calendar
+    >        Right, j  Next month's calendar
+    Memo     m         Open the memo pad
+    Weekly   w         Open the weekly recurrent events window
+    Current  c         Jump to the current month calendar
+    Help     h, F1     Jump to the current month calendar
+.EE
+.LP
+To add an appointment to a day, just click its box or directly
+type its number. The header bar will return feedback once the first number is pressed by changing colors.
+Directly press <Enter> to edit today's events.
+
+.SH EDITING
+A window pops up with a header and very simple text widget to edit calendar
+entries. The default keybindings are EMACS-like and
+listed in the Athena Widget Set webpage,
+.IR www.x.org/releases/X11R7.7/doc/libXaw/libXaw.html#Default_Key_Bindings
+and listed here for your convenience.
+.EX
+    Ctrl-a  Beginning Of Line        Alt-b  Backward Word
+    Ctrl-b  Backward Char            Alt-f  Forward Word
+    Ctrl-d  Delete Next Char         Alt-i  Insert File
+    Ctrl-e  End Of Line              Alt-k  Kill To End Of Paragraph
+    Ctrl-f  Forward Char             Alt-q  Form Paragraph
+    Ctrl-g  Multiply Reset           Alt-v  Previous Page
+    Ctrl-h  Delete Previous Char     Alt-y  Insert Current Selection
+    Ctrl-j  Newline And Indent       Alt-z  Scroll One Line Down
+    Ctrl-k  Kill To End Of Line      Alt-d  Delete Next Word
+    Ctrl-l  Redraw Display           Alt-D  Kill Word
+    Ctrl-m  Newline                  Alt-h  Delete Previous Word
+    Ctrl-n  Next Line                Alt-H  Backward Kill Word
+    Ctrl-o  Newline And Backup       Alt-<  Beginning Of File
+    Ctrl-p  Previous Line            Alt->  End Of File
+    Ctrl-t  Transpose Char           Alt-]  Forward Paragraph
+    Ctrl-u  Multiply by 4            Alt-[  Backward Paragraph
+    Ctrl-v  Next Page                Alt-Delete           Delete Prev Word
+    Ctrl-w  Kill Selection           Alt-Shift Delete     Kill Prev Word
+    Ctrl-y  Unkill                   Alt-Backspace        Delete Prev Word
+    Ctrl-z  Scroll One Line Up       Alt-Shift Backspace  Kill Prev Word
+.EE
+Additionally, these are available:
+.EX
+    Button  Shortcut         Action
+    Save    Ctrl-s           Save changes to file
+    Delete  Ctrl-Shift-d     Delete the file      
+            Shift-Insert     Paste (from primary)
+.EE
+You can also add data to the file by selecting a string on the
+screen and clicking with
+the middle button on the day box in the 
+.IR main\ window.
+
+.SH ALARMS
+Alarms are fired by displaying a dialog box.
+.LP
+To specify an alarm,
+the time format is one of 
+.IR
+.IR h ,
+.IR hh ,
+.IR hhmm ,
+.IR hmm ,
+.IR hh:mm ,
+.IR h:mm ,
+.IR hh.mm ,
+.IR h.mm ;
+all of these may be optionally followed by one
+of
+.IR A ,
+.IR a ,
+.IR AM ,
+.IR am ,
+.IR Am ,
+.IR aM ,
+.IR P ,
+.IR p ,
+.IR PM ,
+.IR pm ,
+.IR Pm ,
+.IR pM .
+Times must always be followed by at least one space or tab.
+Some legal examples are:
+.LP
+.br
+.nf
+    12:00 Lunch
+    1430 Meeting in the cafeteria
+    2:30p Ring Mark
+    7pm Pizza
+    18 Leave work
+.fi
+.LP
+Timed command execution from the data file is supported.
+To trigger a command, the data part of the line starts
+with an exclamation mark:
+.br
+
+    430pm !xmessage 'This is your alarm!'
+.LP
+The exclamation mark can also be replaced by the string '%cron'.
+To make 
+.I Xcalim
+execute a command whenever an alarm is triggered, see the
+.I Cmd
+resource below.
+.LP
+You can make a time like 2:30 mean 14:30 by setting the resource
+.I AlarmWarp
+to be true.
+If this is the case, an alarm hour will be promoted to a PM time if it is found
+to be between the range of
+zero and the value of the resource
+.IR MinAlarmWarp .
+.SH DIALOGS
+Pop-up dialogs with Yes/No questions can be responded to using the mouse or
+or the keyboard by pressing y or n.
+.SH MEMO
+The memo is a panel containing (1) today's events, (2) today's regular
+events, i.e., those that occur weekly, and (3) notes that are not associated
+with any day in particular.
+It is still not keyboard traversable and may be discontinued or disassembled.
+The plan is to join (1) and (2) in a 1D day view strip widget
+in the main window.
+.SH FILES
+.LP
+Data files are stored in the
+.B .xcalim
+directory under the user's home directory. The directory can be
+changed
+Each file is stored in a subdirectory containing all the data
+for a particular year.
+This is incompatible with 
+.LP
+Note that editing day files from outside of
+.I Xcalim 
+(with a standard text editor) will not
+change the contents of any displayed the month until it is
+refreshed by going back and forth.
+.LP
+The alarm system, however, will notice it because it polls
+the alarm files every 59 seconds (by default, see the
+.I Update
+resource to change it).
+.LP
+.TP "\w'ReverseVideoMarkNNN'u"
+.B $HOME/.xcalim/
+Root under which the following files live.
+.TP
+.B xc<dd><Mon><Year>
+A data file is day, month in three letter format and the year.
+.TP
+.B xy<Year>
+A year directory.
+.TP
+.B xw<Day>
+A data file for the weekly code, one per day.
+.TP
+.B memo
+The memo file.
+.PP
+The standard resource database can be found in 
+.I /etc/X11/app-defaults/XCalim.
+.PP
+.SH RESOURCES
+Many things can be customised (colors, shortcuts, line widths)
+with an X-resources file. This is typically
+.I ~/.Xresources
+but the name does not really matter. To "apply the changes", issue
+.IR xrdb\ ~/.Xresources .
+and launch a new
+.IR Xcalim .
+.LP
+Some resources were explicitly defined by the author below;
+it is pretty straightforward to tweak them. The ones
+intrinsic to Athena widgets can also be tweaked, but are
+difficult to fathom if you are not acquainted with X widgets
+resources and hierarchy. 
+The user needs to know the names of the various panels and widgets which
+comprise the application. Use 
+.I editres(1)
+to explore and even edit on-the-fly the widget tree.
+The sample resources file shipped
+with this application will also prove helpful.
+.I Xcalim
+makes extensive use of the resource manager.
+See the sample file
+Resource class names are listed below;
+resource instance names are identical, except the first letter is in
+lower case.
+The following resource manager entries are defined:
+.LP
+.TP "\w'ReverseVideoMarkNNN'u"
+.B OtherUser
+the name of the user whose calendar files will be inspected.
+This is usually set by the
+.B \-u
+option.
+.TP
+.B AlarmScan
+If True enables printing of alarm related debugging information
+to the standard output.
+Default: False.
+.TP
+.B ReverseVideo
+If true display the output in reverse video.
+Default: False.
+.TP
+.B ClockTick
+If you specify a second hand in the main
+date string and only want it updated every 30 seconds (say)
+then setting the ClockTick resource to 30 will force an update for that period.
+Default: 0 (derived from the
+.I Format
+string).
+.TP
+.B EditFmt
+Format of the date string in the edit widgets.
+Supports format characters relating to months, years and days.
+The supported format characters are: %A, %a, %B, %b, %h, %D, %d, %e, %m, %n,
+%t, %x, %y and %%.
+Long/short day and month names are taken from the resources.
+Default: "%A %d %B %Y".
+.TP
+.B MarkToday
+If True then highlight today.
+Default True.
+.TP
+.B TodayBackground
+the background colour when marking, default Black.
+.TP
+.B TodayForeground
+the foreground colour when marking today, default White.
+.TP
+.B Directory
+The name of the directory under the home directory
+where the day files are stored.
+Default: 
+.IR .xcalim .
+.TP
+.B XcalendarCompat
+If true then subdirectories are not created in the .xcalim directory.
+Default: False.
+.TP
+.B GiveHelp
+If True than access to the help information is given.
+If False, help buttons disappear returning screen real-estate to the user.
+You should resist setting this to False in the default resources file.
+Default: True.
+.TP
+.B HelpFromFile
+The
+.I Xcalim
+program will usually have help strings compiled into it.
+These are in English and it may be desirable to use help data in other languages.
+If this resource is true, it forces
+.I Xcalim
+to look in a data file for the help strings.
+Default: False.
+.TP
+.B HelpFile
+gives the name of the file used as a database for the help system,
+accessed when
+.B HelpFromFile
+is True.
+Default: /etc/X11/XCalim.help.
+.TP
+.B InitialEdit
+If True then an edit window for today is automatically displayed on
+startup.
+Default: False.
+.TP
+.B InitialMemo
+If True then the memo window is automatically displayed on startup.
+Default: False.
+.TP
+.B TextBufferSize
+the maximum number of bytes (= ASCII characters) which we are 
+prepared to deal with in an edit window.
+Default: 4004 bytes.
+.TP
+.B Alarms
+whether or not to enable the alarm system.
+Default: True.
+.TP
+.B ExecAlarms
+if the alarm system is active,
+whether or not to invoke timed-execution commands.
+Default: True.
+.TP
+.B Update
+scan the calendar files every 'update' seconds
+looking for alterations in size and modification date.
+When it detects that the file is altered, then
+it will rebuild the internal alarm list.
+Default: 59.
+.TP
+.B Nbeeps
+When an alarm window is popped up, it is accompanied by 'Nbeeps' beeps.
+Might not work on modern hardware.
+Default: 3.
+.TP
+.B Volume
+Control the loudness of the beep. Default: 50.
+.TP
+.B Cmd
+This resource contains a command that is executed by calling the shell
+when every alarm is triggered.
+The command is passed the contents of the data line as one argument.
+.TP
+.B Countdown
+contains a comma separated string of numbers; for example: 10,5,0.
+The string allows the user to customise warning alarms: so in the
+example, alarm boxes will be displayed 10 minutes before the stated time,
+5 minutes before the stated time and exactly on the stated time.
+Commands lines in the data prefaced by a '!' will always be triggered
+exactly at the stated time.
+Default: 10,0.
+.TP
+.B Autoquit
+The message box can remove itself from the screen after
+a specified period, this resource gives that timeout in seconds.
+The 'Stick' button glues the box onto the screen, aborting the timeout.
+If the resource is set to zero, then the button is unsensitive and the
+box does not go away without user action.
+Default: 0.
+.TP
+.B Alarmleft
+contains a
+.I printf
+string that is displayed in the label at the top
+of an alarm box when countdown is in operation and
+there is some time before the stated time.
+The time before the stated time is supplied as the second argument to printf.
+Default: ''%d minutes before...''
+.TP
+.B Alarmnow
+contains the 
+.I printf
+string that is displayed in the label at the top
+of an alarm box when the stated time is reached.
+Default: ''Time is now...''.
+.TP
+.B UseMemo
+enables the use of the memo feature.
+This defaults to ''True'', but is present to allow users to make 
+.I XCalim
+have as it used to.
+.TP
+.B MemoLeft
+affects the placing of the memo button in the top level date window.
+The default is 'True' meaning that the button box is placed on the left
+of the date portion.
+Setting this to 'False' will place the button box to the right of the
+date portions.
+.TP
+.B MemoFile
+gives the name of the memo file within the .xcalim directory.
+The default is 'memo'.
+.TP
+.B MaxDisplayLines
+controls the maximum number of text lines that can placed in the
+top half of the memo panel.
+The top half will normally size to the number of lines in the diary
+file for the day, unless the number of lines exceed the value in
+this resource.
+This ensures that today's events do not dominate the memo panel.
+Default: 5 lines.
+.TP
+.B MaxStripHeight
+controls the maximum height of a strip.
+A scroll bar will be added into the date part of the scrip of the contents
+are larger than this number.
+If unset, this defaults to the height of the screen.
+Default: unset.
+.TP
+.B January
+.B February
+and so on.
+The names of the long form of the month name.
+.TP
+.B Jan
+.B Feb
+and so on.
+A short form of the month name - done this way because I doubt that
+writing with %3s works in all languages.
+Changing this resource means that the data file will no longer be
+compatible with
+.I xcalendar .
+.TP
+.B Sunday
+.B Monday
+and so on.
+The
+.I long
+names of the days: Sunday, Monday etc.
+These are used in titles: the top level widget, the title of an edit window
+and the memo frame.
+.TP
+.B Sun
+.B Mon
+and so on.
+The short names of the days \- used in date strips.
+.TP
+.B Private
+Contains the string 'Private calendar entry' and is used when the \-u option
+is in force. It is displayed when a calendar file entry is unreadable
+by the caller.
+.TP
+.B Alarmleft
+Contains the string '%d minutes before'.
+.TP
+.B Alarmnow
+Contains the string 'Time is now...'.
+.TP
+.B Already
+Contains the string 'Already editing %d %B %Y'
+I prefer to use 'Already editing %e %B %Y'.
+.TP
+.B AlreadyWeekly
+Contains the string 'Already editing %A'.
+.PP
+.LP
+.SH SEE ALSO
+xrdb(1), xcalev(1), xcalpr(1), xcalim_cal(1)
+.PP
+.SH KNOWN BUGS
+Generating two confirmation dialogs (say, from a editor window) and responding
+to both causes the program to crash.
+.LP
+Countdown alarms that would trigger in the previous day do not trigger.
+For example, a 10 min countdown won't trigger for alarms between 00:00 and 00:09.
+.LP
+Alarms set at 00:00 may fail.
+.LP
+Input focus can be wrong if multiple edit windows are mapped simultaneously.
+.PP
+.SH AUTHORS
+.LP
+Qsmodo <qsmodo@github.com>        \- Xcalim
+.PP
+Peter Collinson, Hillside Systems \- Xcalim
+.PP
+This product includes software developed by the University of
+California, Berkeley and its contributors.

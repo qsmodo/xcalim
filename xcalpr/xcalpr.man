@@ -1,0 +1,133 @@
+.TH XCALPR 1 "October 1993" "X Version 11 R5"
+.SH NAME
+xcalpr \- print xcalim calendar entries
+.SH SYNTAX
+.B xcalpr
+[
+.B \-c
+][
+.B \-x
+][
+.B \-f
+file
+][
+.B \-d
+.I dir
+][
+.B \-u
+.I user
+][
+.I date-spec
+]
+.SH DESCRIPTION
+.I Xcalpr
+prints the contents of the
+.I xcalim
+files.
+It is intended to be used in situations when you have no access to an
+X screen.
+It can also be used to generate entries for the standard UNIX
+.I calendar
+program.
+.LP
+With no arguments, it prints any entries that exist for the next seven days.
+The program also reads the contents of the seven daily files and prints them
+at the appropriate point in the output stream.
+Each line in the output is preceded by the day of the week, the day of the
+month, the month and the year.
+.LP
+.I Xcalpr
+can be given a date specification to select months and years.
+If the date spec consists of just a year number, then
+all the data for that year is printed.
+For example:
+.br
+	xcalpr 1994
+.br
+will print all the data for 1994.
+Several years can be specified.
+.LP
+If you give the name of a month, then the data for that month in the current
+year will be printed.
+If the month is in the past, then the data for that month next year will be
+printed.
+For example, if
+.br
+	xcalpr oct jan
+.br
+is typed in August,
+.I xcalpr
+will print October in the current year and January next year.
+.LP
+You can select a particular year by adding the number after any months that
+you need printing:
+.br
+	xcalpr oct nov 1994
+.br
+will print October and November in 1994.
+.LP
+There are a couple of special `month' names.
+The name
+.B rest
+will print the data for the rest of the month, starting tomorrow.
+The \fBrest\fP argument is not recognised if you give a year as a parameter.
+If tomorrow happens to be the first day of the next month, then all the
+data for next month will be printed.
+The name
+.B next
+prints all the data for next month.
+.SH OPTIONS
+.LP
+The
+.I \-c
+option causes 
+.I xcalpr
+to output lines suitable for input to the standard UNIX
+.I calendar
+program.
+.LP
+The
+.I \-d
+switch is followed by a directory name and specifies an alterative
+location for your Calendar directory.
+Your home directory is prepended if the name doesn't start with a slash
+or a dot.
+.LP
+The
+.I \-f
+option is followed by a file name and
+.I xcalpr
+will write it's output to that file, rather than standard output.
+.LP
+The
+.I \-u
+option is followed by a user name and dumps their calendar files rather
+than yours.
+.LP
+The
+.I \-x
+option makes \fIxcalev\fP operate with Calendar files that are compatible
+with the \fIxcalendar\fP program.
+.SH FILES
+.PP
+$HOME/Calendar/\(**
+.LP
+.TP "\w'xc<dd><Mon><Year>  'u"
+xc<dd><Mon><Year>
+A data file is day, Month in three letter format and the year.
+.TP
+xy<Year>
+A year directory.
+.TP
+xw<Day>
+A data file for the weekly code, one per day.
+.SH SEE ALSO
+xcalim(1), xcalev(1), xcalim_cal(1)
+.SH AUTHOR
+.LP
+Copyright 1993 by Peter Collinson, Hillside Systems
+All rights reserved.
+.LP
+This product includes software developed by the University of
+California, Berkeley and its contributors.
+

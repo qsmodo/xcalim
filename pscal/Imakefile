@@ -1,0 +1,10 @@
+BINDIR=/usr/local/bin
+AllTarget(pscal.script)
+InstallScript(pscal,$(BINDIR))
+InstallManPage(pscal,$(MANDIR))
+
+depend::
+
+lint::
+
+install.ln::

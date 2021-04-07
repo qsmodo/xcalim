@@ -1,0 +1,71 @@
+   File Name                Description
+-----------------------------------------------------------
+ CHANGES                    A large list of changes made to xcalim	
+ C_from_ad.sh               A script to generate xcalim_ad.h
+ C_from_help.sh             A script to generate xcalim_help.h
+ Imakefile                  The Imakefile
+ MANIFEST                   This shipping list
+ Makefile.bsdi              A makefile generated on BSD/386
+ Makefile.sunos             A makefile generated on SunOS 4.1.3 Openwindow
+ README                     General README
+ README.contents            Brief note on the contents
+ README.install             How to install the whole system
+ README.sunos               A caution about SunOS
+ TODO                       What should happen next
+ XCalim.ad                  Default resources
+ XCalim.help                Default help
+ calendar.bm                Bitmap
+ help.bm                    Bitmap
+ help_press.bm              Bitmap
+ mouse.bm                   Bitmap
+ mouseaway.bm               Bitmap
+ patchlevel.h               usual patchlevel file
+ pscal                      PostScript directory
+ pscal/Imakefile            
+ pscal/README               
+ pscal/pscal.man            
+ pscal/pscal.script         
+ run_xmkmf                  script to run mkmf on all subdirs
+ sample.regular             Sample regular file
+ strfdate.c                 Convert internal dates from a format
+ strftime                   BSD source of strftime just in case
+ strftime/README            
+ strftime/ptime.c           Small program used to test the strftime routine	
+ strftime/strftime.c        
+ strftime/tzfile.h          
+ version.c                  My versioning control file
+ xcalim.c                   Main part of program
+ xcalim.h                   Header
+ xcalim.man                 Manual page
+ xcalim_alarm.c             Source handling alarms
+ xcalim_buts.c              Makes buttons insensitive when pressed
+ xcalim_cal                 xcalim_cal directory
+ xcalim_cal/Imakefile       
+ xcalim_cal/Makefile.bsdi   
+ xcalim_cal/Makefile.sunos  
+ xcalim_cal/README          
+ xcalim_cal/xcalim_cal.c    
+ xcalim_cal/xcalim_cal.man  
+ xcalim_days.c              Code derived from BSD NetII tape
+ xcalim_edit.c              Handle edit boxes
+ xcalim_help.c              Handle help
+ xcalim_memo.c              Handle the memo box
+ xcalim_mmap.h              mmap control file. Edit if you don't have mmap
+ xcalim_popup.c             Handle all popups
+ xcalim_strip.c             Handle the main strip
+ xcalev                     xcalev directory
+ xcalev/Imakefile           
+ xcalev/Makefile.bsdi       
+ xcalev/Makefile.sunos      
+ xcalev/version.h           
+ xcalev/xcalev.c            
+ xcalev/xcalev.man          
+ xcalpr                     xcalpr directory
+ xcalpr/Imakefile           
+ xcalpr/Makefile.bsdi       
+ xcalpr/Makefile.sunos      
+ xcalpr/README              A short note
+ xcalpr/version.h           
+ xcalpr/xcalim_days.c       Symlink to ../xcalim_days.c
+ xcalpr/xcalpr.c            
+ xcalpr/xcalpr.man          

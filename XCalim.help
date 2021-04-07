@@ -1,0 +1,98 @@
+XCalim.Help XCalim.help 1.2 93/10/23
+{strip
+Use the scrollbar, j/k or Down/Up to scroll this text if needed.
+
+Shortcuts
+    Button   Shortcut  Action
+    <        Left,  k  Previous month's calendar
+    >        Right, j  Next month's calendar
+    Memo     m         Open the memo pad
+    Weekly   w         Open the weekly recurrent events window
+    Current  c         Jump to the current month calendar
+    Help     h, F1     Jump to the current month calendar
+
+    You can type the day number to directly edit it if you shun the
+    mouse. I.e., to edit day 19, just type 19 in the main window. 
+    To edit day 4, type 04 or 4<Enter>. You will see the header bar
+    will change colors when you type the first number. This is just
+    visual feedback so you can be sure the first number was received.
+    Type a lone <Enter> to edit today.
+
+    Say you wanted to edit 19 but mistakenly pressed 2. You can cancel
+    by pressing the <Esc> or <Backspace> keys.
+
+    Nothing happens if you type an inexistent day, e.g., 55.
+
+The Help button.
+    Help can be suppressed by setting the resource giveHelp to False.
+}
+{edit
+This editing window will create or delete a day file for the day shown
+in the title. The file is stored in a directory specified by the
+resource `directory', this is usually `Calendar' in your home
+directory.
+
+Calendar will usually contain directories, one for each year, and the
+day file will be stored in one of these directories. However, this
+makes xcalim incompatible with xcalendar - so if the resource
+xcalendarCompat is True then the use of subdirectories is suppressed.
+
+The large area in the edit window is a normal text input area. Text is
+simply be typed into it, the text is saved by hitting the save button
+which is set to sensitive when the text is changed.  Saving an empty
+buffer will delete the file. Some more questions will be asked if 
+leaving would result in losing information.
+}
+{memo
+The memo window is intended to do three things. First, it allows a
+single button click to display today's actions from your diary.
+Second, it provides a way of displaying regular weekly events.  Third,
+it provides an editable window whose contents can be saved in a file.
+The idea is that this file will contain reminders and other notes.  The
+file is usually called `memo' and is stored in a directory specified by
+the resource `directory', usually `Calendar' in your home directory.
+
+The window is split into three areas. The top section shows the current
+diary entry and cannot be altered by editing. Hit the edit button to
+start a standard day editor window on today's date. The middle section
+shows the weekly entry. Again the edit button allows you to edit these
+The bottom section contains the memo file text area. Text is simply
+typed into it and is stored saved by hitting the save button. This
+will go black when the text is changed.
+Saving an empty buffer will delete the file.
+
+The Quit button will exit. Some more questions will be asked if
+leaving will result in losing information.
+}
+{main
+The command box contains a number of buttons.
+
+Move the mouse into the area showing the date and use
+the mouse buttons to select further actions:
+
+	- Left mouse button pops up this month's calendar strip
+	- Middle mouse button permits date selection
+	- Right mouse button allows exit
+
+Click with the left mouse button in the small box holding
+the mouse icon to edit a memo file.
+
+The Question Mark button shows this information, as you have already
+discovered.
+}
+{weekly
+The weekly strip consists of a number of lines of text.
+
+Line 1: The title
+Line 2: The Quit button that removes the strip from the screen
+Line 3: The Help Button.
+	Help can be suppressed by setting `giveHelp' to False.
+
+Then -  A line for each day in the week.
+	Each line is two areas:
+	The left hand side shows the day in the week
+	The right hand side is an active button. When pressed it starts
+	up an editor for the day. This will create a file for the day
+	in the user's Calendar directory. The label on the button will
+	be the first few characters of the file, if there are any.
+}

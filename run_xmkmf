@@ -1,0 +1,5 @@
+xmkmf
+(cd xcalev;xmkmf)
+(cd xcalpr;xmkmf)
+(cd xcalim_cal;xmkmf)
+(cd pscal;xmkmf)

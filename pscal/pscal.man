@@ -1,0 +1,117 @@
+.TH PSCAL 1 "8/January/1990"
+.SH NAME
+pscal - generates postscript showing your calendar for given year and month
+.SH SYNOPSIS:
+.B pscal
+[
+.B \-Pprinter
+] [
+.B \-R
+] [
+.B \-r
+] [
+.B \-t
+] [
+.B \-d directory
+] [
+.B other printer flags
+] [ month [ year ] ]
+.SH DESCRIPTION:
+.I Pscal
+generates the Postscript showing a calendar for the specified month and year. 
+The year, if omitted, defaults
+to the current year. 
+If both month and year are omitted, the current month is printed.
+.I Year
+can be between 1753
+and 9999.
+The
+.I month
+is a number between 1 and 12.
+I can also be a three letter month abbreviation.
+.LP
+The calendar can be loaded with information from the user.
+The information either comes in an `Event' file or can be
+derived from files under the user's Calendar directory should this exist.
+The search for this data is as follows, if any of these succeeds the data
+for the calendar is taken from that source.
+.IP 1)
+The shell variable EFILE may be set to the name of an Event file.
+.IP 2)
+An event file called `Event' may exist in the current directory.
+.IP 3)
+The file $HOME/.holiday may exist and contain a list of events.
+.IP 4)
+The directory $HOME/Calendar  (or a different directory specified
+with the \-d option) may exist containing XCalim files.
+.LP
+An event file should consist of lines of the form
+.IP
+month:day:message string
+.LP
+Messages should be 20 characters or less, with no more than 6
+messages per day.
+No spaces should appear from the beginning
+of a line until after the second colon.
+Month and day should be numbers in the obvious ranges.
+.SH OPTIONS
+.IP "\-P\fIprinter\fR" 1i
+The printer may be specified with the usual \-P\fIprinter\fR syntax.
+.IP "\-r" 1i
+The calendar page is printed in ``landscape'' orientation (the default).
+.IP "\-R" 1i
+The calendar page is printed in ``portrait'' orientation; this
+yields a slightly smaller image and may be more suitable for
+embedding into other documents.
+.IP "\-d \fIdirectory\fR" 1i
+Use the given directory instead of $HOME/Calendar.
+.IP "\-t" 1i
+Causes the PostScript to be sent to the standard output, rather
+than to the printer.  This is useful if you wish to save the
+output in a file, or if you want to use options with the
+.IR lpr (1)
+command.
+.IP "\-F \fIfont\fR" 1i
+Sets the font family for the title text (the month and year).
+.IP "\-f \fIfont\fR" 1i
+Sets the font family for the day-of-month numbers.
+.PP
+Other arguments starting with `\-' are passed through to
+.IR lpr (1).
+.PP
+Any argument whose first character is '-' is passed on to lpr.
+The shell variables BANNER, LFOOT, CFOOT, and RFOOT become a
+top centered banner, and left, centered, or right justified
+footers respectively.  As in:
+.IP
+BANNER="Schedule 1" CFOOT=Preliminary pscal 4 90
+.SH AUTHOR
+Patrick Wood
+.br
+Copyright (C) 1987 by Pipeline Associates, Inc.
+.br
+Permission is granted to modify and distribute this free of charge.
+.SH HISTORY
+Original From: patwood@unirot.UUCP (Patrick Wood)
+.br
+Shell stuff added 3/9/87 by King Ables
+.br
+Made pretty by tjt 1988
+.br
+Holiday and printer flag passing hacks added Dec 1988 
+by smann@june.cs.washington.edu 
+.br
+Used the better looking version with 5 rows of days rather than 6
+hacked together with holiday and banner/footnotes added
+by Joe (No Relation) Wood, 12/89, jlw@lzga.ATT.COM
+.SH BUGS
+`Pscal' doesn't work for months before 1753 (weird stuff happened
+in September, 1752).
+.PP
+A better format for the dates of holidays would be nice.
+An escape to allow holiday messages to be raw PostScript would
+also be nice.
+.PP
+The holiday messages should be handled more intelligently (ie,
+the messages should be clipped to the day).
+

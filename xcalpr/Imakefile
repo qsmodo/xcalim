@@ -1,0 +1,11 @@
+DEFINES=-DVER_VEC
+BINDIR=/usr/local/bin
+INSTPGMFLAGS=$(INSTBINFLAGS)
+
+AllTarget(xcalpr)
+NormalProgramTarget(xcalpr, xcalpr.o xcalim_days.o,/**/,/**/,/**/)
+
+InstallProgram(xcalpr,$(BINDIR))
+InstallManPage(xcalpr,$(MANDIR))
+
+DependTarget()

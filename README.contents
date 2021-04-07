@@ -1,0 +1,21 @@
+Here's what you get..
+
+
+On this level is the source for the xcalim program.
+
+There is also in sub-directories:
+
+a)	pscal
+	An `old' program that generates calendars in PostScript. Make you
+	calendar look nice on the wall. There's a README file in this
+	directory that you should look at before installing.
+b)	xcalim_cal
+	A program written by Ed Gould. It takes you calendar entries and
+	makes a file for the standard UNIX calendar program to send you mail.
+c)	xcalev
+	A program that is used to pre-load your calendar with all those
+	birthdays that you are prone to forget.
+d)	xcalpr
+	A program that prints calendar files out to a terminal. Nice if
+	you have no X screen. This also can be used to generate a file
+	for the UNIX calendar program.
