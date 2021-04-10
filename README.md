@@ -36,7 +36,7 @@ Clone the repository, enter its directory, make and install.
     cd xcalim
     xmkmf && make Makefiles && make derived && make depend && make && sudo make install
 
-The dependencies include Libxaw, Libxmu and, for building, Xmkmf (`xutils-dev` package
+Dependencies include Libxaw, Libxmu and, for building, Xmkmf (`xutils-dev` package
 in Debian).
 
 ### Auxiliary programs
@@ -62,14 +62,10 @@ restricted, mouse is relied upon very much.
 This one is Tk based. Also very good, but not so powerful as Plan.
 Cannot rely solely on keyboard either.
 
-Qsmodo <github.com/qsmodo>
-
 ### Notes
 1: I would keep the name Xcal but it clashes with various unrelated software.
 Xcalim, on the other hand, seems unused.  
-2: I made a `sed s/xcal/xcalim/` so mentions of the original Xcal were
-unintendedly changed. I have tried to track them down and fix them.  
-3: There is some leftover code from Xcal laying around. I'll try to remove it as
+2: There is some leftover code from Xcal laying around. I'll try to remove it as
 I go.
 
 [1]: https://en.wikipedia.org/wiki/X_Athena_Widgets
