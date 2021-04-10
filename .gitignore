@@ -1,2 +1,11 @@
 *.o
+*._man
+*.bak
+tags
+xcalim_ad.h
+xcalim_help.h
+xcalpr
+xcalim
+xcalev
+xcalim_cal
 debian

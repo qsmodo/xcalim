@@ -605,9 +605,8 @@ WriteCalendarFile(mw, day, contents)
 	/*
 	 * tickle the alarm system if we have altered `today'
 	 */
-	if (today.day == day && today.month == mw->mw_month &&
-	    today.year == mw->mw_year)
-		AlarmFilePoll(NULL);
+    if (today.day == day && today.month == mw->mw_month &&
+            today.year == mw->mw_year) AlarmFilePoll(NULL);
 	return (True);
 }
 
@@ -621,31 +620,28 @@ DeleteCalendarFile(mw, day)
 
 	fname[0] = '\0';
 
-	if (mw->mw_useTopDir == False) {
-		/*
-		 * we have no data in the top directory 
-		 * so let's create the directory name
-		 */
-		(void) sprintf(fname, "xy%d", mw->mw_year);
+    if (mw->mw_me.me_type == ME_WEEKLY) {
+        (void) sprintf(cname, "xw%s", appResources.sday[day]);
+    } else {
+        if (mw->mw_useTopDir == False) {
+            /* we have no data in the top directory 
+            so let's create the directory name */
+            (void) sprintf(fname, "xy%d", mw->mw_year);
 
-		if (access(fname, F_OK) < 0)
-			return;
-		strcat(fname, "/");
-	}
-	(void) sprintf(cname, "xc%d%s%d", day,
-		       appResources.smon[mw->mw_month],
-		       mw->mw_year);
+            if (access(fname, F_OK) < 0) return;
+            strcat(fname, "/");
+        }
+        (void) sprintf(cname, "xc%d%s%d", day,
+                appResources.smon[mw->mw_month],
+                mw->mw_year);
+    }
 
 	strcat(fname, cname);
-
 	unlink(fname);
 
-	/*
-	 * tickle the alarm system if we have altered `today'
-	 */
-	if (today.day == day && today.month == mw->mw_month &&
-	    today.year == mw->mw_year)
-		AlarmFilePoll(NULL);
+	/* * tickle the alarm system if we have altered `today' */
+    if (today.day == day && today.month == mw->mw_month &&
+            today.year == mw->mw_year) AlarmFilePoll(NULL);
 }
 
 /*
@@ -1009,8 +1005,7 @@ DeleteEditFile(w, closure, call_data)
 	day = ed->ed_day;
 
     DeleteCalendarFile(mw, day);
-	if (mw->mw_have[day])
-		XtFree(mw->mw_have[day]);
+	if (mw->mw_have[day]) XtFree(mw->mw_have[day]);
 	mw->mw_have[day] = XtMalloc(1);
 	strcpy(mw->mw_have[day], "\0");
     UpdateDayDetails(mw, day);
