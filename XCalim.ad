@@ -95,33 +95,93 @@ XCalim*helpText.?.Translations: #override\
 ! XCalim*header.Command.shapeStyle: roundedRectangle
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   Colourful Xcalim
-!Use Xcolorsel to find available colors aliases 
-!or provide them as RGB values: #RRGGBB
-XCalim*Sun*foreground: red
-!XCalim.MarkBackground:		wheat1
-!XCalim*foreground:		black
-!XCalim*quit.foreground:		black
-!XCalim*quit.background:		wheat2
-!XCalim*edit.foreground:		black
-!XCalim*edit.background:		wheat2
-!XCalim*weeklyEdit.foreground:	black
-!XCalim*weeklyEdit.background:	wheat2
-!XCalim*next.foreground:		black
-!XCalim*next.background:		wheat2
-!XCalim*back.foreground:		black
-!XCalim*back.background:		wheat2
-!XCalim*help.foreground:		black
-!XCalim*help.background:		wheat2
-!XCalim*save.foreground:		black
-!XCalim*save.background:		wheat2
-!XCalim*yes.foreground:		black
-!XCalim*yes.background:		wheat2
-!XCalim*no.foreground:		black
-!XCalim*no.background:		wheat2
-!XCalim*helpQuit.foreground:	black
-!XCalim*helpQuit.background:	wheat2
-!XCalim*header.foreground:		black
-!XCalim*header.background:		wheat2
-!XCalim*Sun*Label*background:	wheat2
-!XCalim*Sat*Label*background:	wheat2
+!!   Colourful Xcalim (green/brown theme)
+!!Use Xcolorsel to find available colors aliases 
+!!or provide them as RGB values: #RRGGBB
+!
+!XCalim.GiveHelp:                         true
+!XCalim.JustQuit:                         true
+!XCalim.InitialMemo:                      false
+!XCalim.InitialEdit:                      false
+!XCalim.Format:                           %H:%M:%S
+!XCalim.StripFmt:                         %d/%m/%Y
+!XCalim.Alarmleft:                        %d minutes to:
+!XCalim.Alarmnow:                         Your appointment is now.
+!XCalim.Countdown:                        4,0
+!XCalim.Autoquit:                         0
+!XCalim.DayWidth:                         140
+!XCalim.DayLabelHeight:                   20
+!XCalim.DayBoxHeight:                     80
+!
+!XCalim.TodayForeground:                  green
+!XCalim.TodayBackground:                  darkgreen
+!
+!XCalim.main.header*background:           orange4
+!XCalim.main.header*foreground:           green
+!XCalim.main.header.help.background:      limegreen
+!XCalim.main.header.help.foreground:      black
+!XCalim.main.header.current.background:   olivedrab1
+!XCalim.main.header.current.foreground:   black
+!XCalim.main.header.weekly.background:    palegreen
+!XCalim.main.header.weekly.foreground:    black
+!XCalim.main.header.memo.background:      green
+!XCalim.main.header.memo.foreground:      black
+!XCalim.main.header.back.background:      darkslategray1
+!XCalim.main.header.back.foreground:      black
+!XCalim.main.header.next.background:      darkslategray1
+!XCalim.main.header.next.foreground:      black
+!
+!XCalim.main*Sun*background:              palegreen
+XCalim.main*Sun*foreground:              red
+!XCalim.main*Mon*background:              palegreen
+!XCalim.main*Tue*background:              palegreen
+!XCalim.main*Wed*background:              palegreen
+!XCalim.main*Thu*background:              palegreen
+!XCalim.main*Fri*background:              palegreen
+!XCalim.main*Sat*background:              palegreen
+!XCalim.main*pad.background:              khaki3
+!XCalim.main*info.foreground:             blue
+!
+!XCalim.weekly*panel*background:          palegreen
+!XCalim.weekly*info.foreground:           blue
+!
+!XCalim.edit.?.text*background:           palegreen
+!XCalim.edit.?.text*foreground:           blue
+!XCalim.edit.?.title.background:          black
+!XCalim.edit.?.title.date.background:     black
+!XCalim.edit.?.title.date.foreground:     green
+!XCalim.edit.?.title.delete.background:   red
+!XCalim.edit.?.title.save.background:     gold
+!XCalim.edit.?.title.help.background:     limegreen
+!
+!XCalim.memo*background:                  palegreen
+!XCalim.memo.?.title.background:          black
+!XCalim.memo.?.title.date.background:     black
+!XCalim.memo.?.title.date.foreground:     green
+!XCalim.memo.?.title.help.background:     limegreen
+!XCalim.memo.?.title.edit.background:     turquoise
+!XCalim.memo*weeklyEdit.background:       turquoise
+!XCalim.memo*save.background:             gold
+!
+!!Use Xfontsel to find available fonts
+!XCalim*Font:                             -*-terminus-bold-r-*-*-14-*-*-*-*-*-iso10646-*
+!XCalim*viewport.panel*info.font:         -*-terminus-bold-r-*-*-14-*-*-*-*-*-iso10646-*
+!XCalim*main*panel.?.Label.font:          -*-terminus-bold-r-*-*-18-*-*-*-*-*-iso10646-*
+!XCalim*header*Font:                      -*-terminus-medium-r-*-*-14-*-*-*-*-*-iso10646-*
+!XCalim*title*Font:                       -*-terminus-medium-r-*-*-14-*-*-*-*-*-iso10646-*
+!XCalim*memo*Command*Font:                -*-terminus-medium-r-*-*-14-*-*-*-*-*-iso10646-*
+!
+!XCalim*Dialog.background:                mediumturquoise
+!XCalim*Dialog.foreground:                slategrey
+!XCalim*Dialog.label.background:          mediumturquoise
+!XCalim*Dialog.cancel.background:         white
+!XCalim*Dialog.no.background:             darkkhaki
+!XCalim*Dialog.yes.background:            gold
+!
+!XCalim*helpText*background:              khaki3
+!XCalim*helpText*foreground:              black
+!
+!XCalim.?.?.viewport.vertical.foreground: green
+!XCalim.?.?.viewport.vertical.background: orange4
+!XCalim*Scrollbar.width:                  10
+!XCalim*Scrollbar.thumb:                  None
