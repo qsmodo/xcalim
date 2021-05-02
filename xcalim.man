@@ -440,13 +440,6 @@ this resource.
 This ensures that today's events do not dominate the memo panel.
 Default: 5 lines.
 .TP
-.B MaxStripHeight
-controls the maximum height of a strip.
-A scroll bar will be added into the date part of the scrip of the contents
-are larger than this number.
-If unset, this defaults to the height of the screen.
-Default: unset.
-.TP
 .B January
 .B February
 and so on.

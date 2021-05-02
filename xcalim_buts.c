@@ -1,12 +1,9 @@
 /***
-* module name:
-	xcalim_buts.c
-* function:
-	Deal with callback management for sensitive buttons
-	When a button is pressed we make it insensitive.
-	In general a button starts a popup - when the popup
-	dies we reset the button.
-	Problem is when the button dies before the popup.
+  Deal with callback management for sensitive buttons
+  When a button is pressed we make it insensitive.
+  In general a button starts a popup - when the popup
+  dies we reset the button.
+  Problem is when the button dies before the popup.
 ***/
 #include <stdio.h>
 #include <ctype.h>
@@ -18,9 +15,9 @@
 #include "xcalim.h"
 
 typedef struct active {
-	struct active   *next;
-	Widget		button;
-	Widget		popup;
+    struct active *next;
+    Widget button;
+    Widget popup;
 } Active;
 
 static Active *act;
@@ -45,46 +42,38 @@ static void ButtonIsDead();
  */
 void
 ButtonOff(but, popup)
-	Widget		but;
-	Widget		popup;
+    Widget but;
+    Widget popup;
 {
-	
-	XtSetSensitive(but, False);
-	
-	XtAddCallback(popup, XtNdestroyCallback, PopupIsDead, but);
-
-	XtAddCallback(but, XtNdestroyCallback, ButtonIsDead, but);
-
-	AddToActive(but, popup);
+    XtSetSensitive(but, False);
+    XtAddCallback(popup, XtNdestroyCallback, PopupIsDead, but);
+    XtAddCallback(but, XtNdestroyCallback, ButtonIsDead, but);
+    AddToActive(but, popup);
 }
 
-/*
- * Turn a button on
- */
+/* * Turn a button on */
 void
 ButtonOn(but)
-	Widget		but;
+    Widget but;
 {
-	Active		*ap;
+    Active *ap;
 
-	if (ap = LookActive(but)) {
-		XtRemoveCallback(but, XtNdestroyCallback, ButtonIsDead, but);
-		XtSetSensitive(but, True);
-		DeleteFromActive(but);
-	}
+    if (ap = LookActive(but)) {
+        XtRemoveCallback(but, XtNdestroyCallback, ButtonIsDead, but);
+        XtSetSensitive(but, True);
+        DeleteFromActive(but);
+    }
 }
 
-/*
- * Turn a help button on
- */
+/* * Turn a help button on */
 void
 HelpButtonOn(popup)
-	Widget		popup;
+    Widget popup;
 {
-	Active		*ap;
+    Active *ap;
 
-	while (ap = LookPopup(popup))
-		ButtonOn(ap->button);
+    while (ap = LookPopup(popup))
+        ButtonOn(ap->button);
 }
 
 /*
@@ -94,12 +83,11 @@ HelpButtonOn(popup)
 /* ARGSUSED */
 static void
 PopupIsDead(w, closure, call_data)
-	Widget		w;
-	void *         closure;
-	void *         call_data;
-	
+    Widget w;
+    void   *closure;
+    void   *call_data;
 {
-	ButtonOn((Widget) closure);
+    ButtonOn((Widget) closure);
 }
 
 /*
@@ -109,85 +97,80 @@ PopupIsDead(w, closure, call_data)
 /* ARGSUSED */
 static void
 ButtonIsDead(w, closure, call_data)
-	Widget		w;
-	void *         closure;
-	void *         call_data;
-	
-{
-	Active	       *ap;
-	Widget		but = (Widget)closure;
+    Widget w;
+    void   *closure;
+    void   *call_data;
 
-	if (ap = LookActive(but)) {
-		XtRemoveCallback(ap->popup, XtNdestroyCallback, PopupIsDead, but);
-		DeleteFromActive(but);
-	}
+{
+    Active *ap;
+    Widget but = (Widget)closure;
+
+    if (ap = LookActive(but)) {
+        XtRemoveCallback(ap->popup, XtNdestroyCallback, PopupIsDead, but);
+        DeleteFromActive(but);
+    }
 }
 
-/*
- * Add a button to the active list
- */
-static void
+/* * Add a button to the active list */
+    static void
 AddToActive(but, popup)
-	Widget		but;
-	Widget		popup;
+    Widget but;
+    Widget popup;
 {
-	Active	        *ap;
+    Active *ap;
 
-	if (LookActive(but) == NULL) {
-		ap = (Active *) XtMalloc(sizeof (Active));
-		ap->button = but;
-		ap->popup = popup;
-		ap->next = act;
-		act = ap;
-	} /* not convinced that the else arm here is a never happen */
+    if (LookActive(but) == NULL) {
+        ap = (Active *) XtMalloc(sizeof (Active));
+        ap->button = but;
+        ap->popup = popup;
+        ap->next = act;
+        act = ap;
+    } /* not convinced that the else arm here is a never happen */
 }
 
-static Active *
+    static Active *
 LookActive(but)
-	Widget		but;
+    Widget but;
 {
-	Active	       *ap;
-	
-	for (ap = act; ap; ap = ap->next) {
-		if (ap->button == but)
-			return ap;
-	}
-	return NULL;
+    Active *ap;
+
+    for (ap = act; ap; ap = ap->next) {
+        if (ap->button == but)
+            return ap;
+    }
+    return NULL;
 }
 
 static Active *
 LookPopup(popup)
-	Widget		popup;
+    Widget popup;
 {
-	Active	       *ap;
-	
-	for (ap = act; ap; ap = ap->next) {
-		if (ap->popup == popup)
-			return ap;
-	}
-	return NULL;
+    Active *ap;
+
+    for (ap = act; ap; ap = ap->next) {
+        if (ap->popup == popup)
+            return ap;
+    }
+    return NULL;
 }
 
-/*
- * remove an active entry
- */
+/* * remove an active entry */
 static void
 DeleteFromActive(but)
-	Widget		but;
+    Widget but;
 {
-	Active	       *ap;
-	Active	       *lp = NULL;
+    Active *ap;
+    Active *lp = NULL;
 
-	for (ap = act; ap; ap = ap->next) {
-		if (ap->button == but) {
-			if (lp == NULL) 
-				act = ap->next;
-			else
-				lp->next = ap->next;
-			XtFree((char *)ap);
-			return;
-		}
-		lp = ap;
-	}
+    for (ap = act; ap; ap = ap->next) {
+        if (ap->button == but) {
+            if (lp == NULL) 
+                act = ap->next;
+            else
+                lp->next = ap->next;
+            XtFree((char *)ap);
+            return;
+        }
+        lp = ap;
+    }
 }
-

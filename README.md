@@ -65,10 +65,10 @@ Cannot rely solely on keyboard either.
 ### Notes
 1: I would keep the name Xcal but it clashes with various unrelated software.
 Xcalim, on the other hand, seems unused.  
-2: There is some leftover code from Xcal laying around. I'll try to remove it as
-I go.
+2: For X-resources (mainly colors and fonts) customization, [Getting the most out of X-resources][5] is a useful article.
 
 [1]: https://en.wikipedia.org/wiki/X_Athena_Widgets
 [2]: https://packages.debian.org/buster/xcal
 [3]: https://www.bitrot.de/plan.html
 [4]: https://en.wikipedia.org/wiki/Ical_(Unix)
+[5]: https://www.linuxjournal.com/article/1154

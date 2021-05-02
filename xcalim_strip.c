@@ -1,9 +1,4 @@
-/***
-* module name:
-	xcalim_strip.c
-* function:
-	Deal with the calendar window and its buttons
-***/
+/*** Deal with the calendar window and its buttons ***/
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -34,7 +29,7 @@ Date            callb; //Contains date when calendar day button pressed
 from a primary selection when clicked on a strip */
 static String   defTranslations =
 "<Btn2Down>: set()\n\
-<Btn2Up>: LoadDateAction() unset()";
+<Btn2Up>: PrimaryInsert() unset()";
 static String   weekTranslations =
 "<Message>WM_PROTOCOLS: PopDownShell()\n\
 <Key>1:                 WeekDay(0)\n\
@@ -51,7 +46,7 @@ static String   extTranslations =
 <Key>Right:      PressAButton(6)\n\
 <Key>m:          PressAButton(7)\n\
 <Key>c:          PressAButton(8)\n\
-<Key>w:          DoWeekly()\n\
+<Key>w:          PressAButton(12)\n\
 <Key>h:          PressAButton(10)\n\
 <Key>F1:         PressAButton(10)\n\
 <Key>BackSpace:  Nr(-1)\n\
@@ -81,15 +76,16 @@ void            StripHelp();
 void            PopDownShell();
 void            WeeklyHelp();
 void            MkDate();
+void            CreateHeaderButtons();
 
 /*
  * Local routines
  */
+static void     LeftPadding(int, Widget *, Widget, Dimension);
+static void     RightPadding(int, Widget *, Widget, Dimension, int);
 static void     MakeNewMonth();
-static void	LoadDateCallback();
+static void     PrimaryPaste();
 static Cardinal DateSum();
-static void	setStripMax();
-void CreateHeaderButtons();
 
 #define argLD(N,V) { XtSetArg(args[nargs], N, V); nargs++; }
 
@@ -164,7 +160,7 @@ NewMonthStrip(td, but, attach)
     static XtTranslations but2;
     Widget     shell, mon, dw, lw, lwi, form[7] = {NULL}, monvp, mondt;
     char       iconName[256], dayNr[3];
-    int        type, i, total;
+    int        type, i, total = 0;
     MonthEntry *me;
     Instance   *ins;
     String     dayStr;
@@ -223,18 +219,7 @@ NewMonthStrip(td, but, attach)
             XtNdefaultDistance, 0,
             NULL);
 
-    total = 0;
-    /* Create padding days if the first day of the month is not sunday */
-    for (i = 0; i < thisDay; i++) {
-        form[i] = XtVaCreateManagedWidget("pad", formWidgetClass, mondt, 
-                  XtNresizable, True,
-                  XtNwidth, appResources.squareW,
-                  XtNheight, appResources.squareH + appResources.labelH,
-                  XtNborderWidth, borderW,
-                  XtNfromHoriz, i ? form[i - 1] : NULL,
-                  NULL);
-        total++;
-    }
+    LeftPadding(thisDay, form, mondt, borderW);
 
 #ifdef	LONG_IS_32_BITS
 	callbacks[0].callback = DayBack;
@@ -242,7 +227,7 @@ NewMonthStrip(td, but, attach)
 	callbacks[0].callback = YmBack;
 	callbacks[1].callback = DayBack;
 #endif
-	for (i = startLoop; i <= numberOfDays; i++) {
+	for (i = startLoop, total = thisDay; i <= numberOfDays; i++, total++) {
 		dayStr = appResources.sday[thisDay];
 #ifdef LONG_IS_32_BITS
 		callbacks[0].closure = (void *) DatePack(thisDay, i, td->month, 
@@ -322,7 +307,6 @@ NewMonthStrip(td, but, attach)
 		XtOverrideTranslations(lwi, but2);
 
 		thisDay = (thisDay + 1) % 7;
-        total++;
 
 		/* * cope with 1752 */
 		if (td->year == 1752 && td->month == 8 && i == 2) {
@@ -333,23 +317,12 @@ NewMonthStrip(td, but, attach)
 	ClearCallbacks();
     switch (type) {
     case ME_MONTHLY:
-        /* Create leftover padding days if the month does not have six columns */
-        for (; total <= 41; total++) {
-            form[thisDay] = XtVaCreateManagedWidget("pad", 
-                    formWidgetClass, mondt,
-                    XtNresizable, True,
-                    XtNdefaultDistance, 0,
-                    XtNwidth, appResources.squareW,
-                    XtNheight, appResources.squareH + appResources.labelH,
-                    XtNfromHoriz, thisDay ? form[thisDay - 1] : NULL,
-                    XtNfromVert,  form[thisDay],
-                    XtNborderWidth, borderW,
-                    NULL);
-            thisDay = (thisDay + 1) % 7;
-        }
+        /* Create extra padding days if the month does not have six columns */
+        RightPadding(thisDay, form, mondt, borderW, total);
         ResizeNicely(parent, attach, mon);
         XtManageChild(mon);
-        XtOverrideTranslations(parent, XtParseTranslationTable(extTranslations));
+        XtOverrideTranslations(parent,
+                XtParseTranslationTable(extTranslations));
         XtSetKeyboardFocus(parent, parent);
         return(appResources.squareW * 7 + borderW * 14);
     case ME_WEEKLY:
@@ -397,30 +370,6 @@ wHeight(w)
 	return H;
 }
 
-/*
- * Set the max size of the viewport for the strip
- */
-static void
-setStripMax(w, stripHeight, hdrHeight)
-	Widget	w;
-	Dimension stripHeight;
-	Dimension hdrHeight;
-{
-	Dimension	maxH;
-	Arg             args[1];
-
-	if (appResources.maxstripheight == 0) {
-		/* remove the hdrHeight here as a guess */
-		maxH = HeightOfScreen(XtScreen(toplevel));
-		maxH -= hdrHeight;
-	}	
-	else	maxH = appResources.maxstripheight;
-	maxH -= hdrHeight + 20;
-	if (stripHeight > maxH) {
-		XtSetArg(args[0], XtNheight, maxH);
-		XtSetValues(w, args, 1);
-	}
-}
 /*
  * Create header bar for normal monthly strip
  */
@@ -538,6 +487,47 @@ CreateHeaderButtons(dw, td)
 	ClearCallbacks();
 }
 
+/* Create padding days if the first day of the month is not sunday */
+static void
+LeftPadding(thisDay, form, mondt, borderW)
+    int        thisDay;
+    Widget     *form;
+    Widget     mondt;
+    Dimension  borderW;
+{
+    for (int i = 0; i < thisDay; i++) {
+        form[i] = XtVaCreateManagedWidget("pad", formWidgetClass, mondt, 
+                  XtNresizable, True,
+                  XtNwidth, appResources.squareW,
+                  XtNheight, appResources.squareH + appResources.labelH,
+                  XtNborderWidth, borderW,
+                  XtNfromHoriz, i ? form[i - 1] : NULL,
+                  NULL);
+    }
+}
+
+static void
+RightPadding(thisDay, form, mondt, borderW, total)
+    int        thisDay;
+    Widget     *form;
+    Widget     mondt;
+    Dimension  borderW;
+    int        total;
+{
+    for (; total <= 41; total++) {
+        form[thisDay] = XtVaCreateManagedWidget("pad", 
+                formWidgetClass, mondt,
+                XtNresizable, True,
+                XtNdefaultDistance, 0,
+                XtNwidth, appResources.squareW,
+                XtNheight, appResources.squareH + appResources.labelH,
+                XtNfromHoriz, thisDay ? form[thisDay - 1] : NULL,
+                XtNfromVert,  form[thisDay],
+                XtNborderWidth, borderW,
+                NULL);
+        thisDay = (thisDay + 1) % 7;
+    }
+}
 
 /* * Called when the date changes to ensure that the correct day has the
  * appropriate highlights */
@@ -586,7 +576,7 @@ PopUpMemo(w, event, params, numb)
         fprintf(stderr, "xcalim: Could not find button memo.\n");
 }
 
-
+/* Handles 1..7 input on a week view */
 void
 WeekDay(w, event, params, numb)
         Widget        	w;
@@ -658,21 +648,18 @@ Nr(w, event, params, numb)
  * This allows quick data loading
  */
 void
-LoadDateStrip(w, event, params, numb)
+LoadFromPrimary(w, event, params, numb)
         Widget        	w;
         XSelectionEvent *event;
         String         *params;
         Cardinal       *numb;
 {
-	/* set up to get the selection */
-	/* I am unconvinced that it should be this easy */
-	XtGetSelectionValue(w, XA_PRIMARY, XA_STRING, LoadDateCallback, 0, 
+	XtGetSelectionValue(w, XA_PRIMARY, XA_STRING, PrimaryPaste, 0, 
             XtLastTimestampProcessed(XtDisplay(w)));
-	/* The work is done in the callback routine */
 }
 
 static void
-LoadDateCallback(w, xcd, sel, seltype, val, len, fmt)
+PrimaryPaste(w, xcd, sel, seltype, val, len, fmt)
 	Widget		w;
 	XtPointer	xcd;
 	Atom		*sel;

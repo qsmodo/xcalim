@@ -1,9 +1,3 @@
-/*
- *	xcalim.h	3.33	9/13/95
- *
- *	Header file for the xcalim program
- */
-
 /* #define	ALLOW_OTHER_WRITE */
 /* Normally, a user can look at someone else's Calendar files with the   */
 /* -u flag. For safety, they are prohibited by xcalim from writing. Define */
@@ -76,7 +70,6 @@ struct resources
 				/* can be found */
 	int	textbufsz;	/* Text buffer size for editing */
 	Dimension minstripwidth; /* Minimum strip width */
-	Dimension maxstripheight; /* Maximum strip height */
 	Boolean	alarms;		/* false - no alarms, true - alarms */
 	Boolean	execalarms;	/* false - no exec alarms, true - exec alarms */
 	XtIntervalId interval_id;/* store XtAddTimeOut value */
@@ -192,7 +185,6 @@ extern	Boolean	FoundCalendarDir;	/* whether the Calendar directory */
 /*
  *	Global routines
  */
-void	HelpShow();
 void	MemoPopup();
 void	InitAlarms();
 void	FmtTime();
@@ -207,7 +199,7 @@ void    PopdownHelp();
 void	AskLeave();
 Widget  DialogPopup();
 void	TextCal();
-void	LoadDateStrip();
+void	LoadFromPrimary();
 void	WeekDay();
 void	CloseMemo();
 void	PopUpMemo();

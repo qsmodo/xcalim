@@ -38,9 +38,9 @@ all::
 
 # platform:  $XFree86: xc/config/cf/linux.cf,v 3.220 2003/12/30 22:38:33 tsi Exp $
 
-# operating system:  Linux 4.19.0-16-amd64 x86_64 [ELF] (4.19.0)
-# libc:	(6.28.0)
-# binutils:	(231)
+# operating system:  Linux 5.10.0-6-amd64 x86_64 [ELF] (5.10.0)
+# libc:	(6.31.0)
+# binutils:	(235)
 
 # $Xorg: lnxLib.rules,v 1.3 2000/08/17 19:41:47 cpqbld Exp $
 # $XFree86: xc/config/cf/lnxLib.rules,v 3.52 2003/10/31 20:49:03 herrb Exp $
