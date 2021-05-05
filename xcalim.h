@@ -205,6 +205,7 @@ void	CloseMemo();
 void	PopUpMemo();
 void	Nr();
 void	PopDownShell();
+void	ScrollCal();
 void	StripHelp();
 void	DoMemo();
 void	DoWeekly();

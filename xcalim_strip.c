@@ -11,14 +11,15 @@
 #include <X11/Xaw/Command.h>
 #include <X11/Xaw/Label.h>
 #include <X11/Xaw/Dialog.h>
+#include <X11/Xaw/Scrollbar.h>
 #include <X11/Xaw/AsciiText.h>
 #include "xcalim.h"
 
 static XtCallbackRec callbacks[] = {
-	{NULL, NULL},
-	{NULL, NULL},
-	{NULL, NULL},
-	{NULL, NULL}
+    {NULL, NULL},
+    {NULL, NULL},
+    {NULL, NULL},
+    {NULL, NULL}
 };
 #define ClearCallbacks() memset((void *)callbacks, '\0', sizeof (callbacks))
 
@@ -29,7 +30,7 @@ Date            callb; //Contains date when calendar day button pressed
 from a primary selection when clicked on a strip */
 static String   defTranslations =
 "<Btn2Down>: set()\n\
-<Btn2Up>: PrimaryInsert() unset()";
+<Btn2Up>:    PrimaryInsert() unset()";
 static String   weekTranslations =
 "<Message>WM_PROTOCOLS: PopDownShell()\n\
 <Key>1:                 WeekDay(0)\n\
@@ -39,16 +40,24 @@ static String   weekTranslations =
 <Key>5:                 WeekDay(4)\n\
 <Key>6:                 WeekDay(5)\n\
 <Key>7:                 WeekDay(6)";
-static String   extTranslations =
-"<Key>j:         PressAButton(6)\n\
-<Key>k:          PressAButton(5)\n\
-<Key>Left:       PressAButton(5)\n\
+static String   viewportTranslations =
+"~Shift<Key>j:   PressAButton(6)\n\
 <Key>Right:      PressAButton(6)\n\
+~Shift<Key>k:    PressAButton(5)\n\
+<Key>Left:       PressAButton(5)\n\
 <Key>m:          PressAButton(7)\n\
 <Key>c:          PressAButton(8)\n\
 <Key>w:          PressAButton(12)\n\
 <Key>h:          PressAButton(10)\n\
 <Key>F1:         PressAButton(10)\n\
+Shift<Key>k:     ScrollCal(-1)\n\
+<Key>Up:         ScrollCal(-1)\n\
+Shift<Key>j:     ScrollCal(1)\n\
+<Key>Down:       ScrollCal(1)\n\
+<Key>Prior:      ScrollCal(-8)\n\
+~Shift<Key>g:    ScrollCal(-8)\n\
+<Key>Next:       ScrollCal(8)\n\
+Shift<Key>g:     ScrollCal(8)\n\
 <Key>BackSpace:  Nr(-1)\n\
 <Key>Escape:     Nr(-1)\n\
 <Key>Return:     Nr(-2)\n\
@@ -66,43 +75,45 @@ static String   extTranslations =
 /*
  * Forward routines local to this file
  */
-static void     DayBack();
-#ifndef LONG_IS_32_BITS
-static void     YmBack();
-#endif
-static void     ResizeNicely();
 void            Nr();
 void            StripHelp();
 void            PopDownShell();
 void            WeeklyHelp();
 void            MkDate();
 void            CreateHeaderButtons();
+void            ScrollCal();
 
 /*
  * Local routines
  */
-static void     LeftPadding(int, Widget *, Widget, Dimension);
-static void     RightPadding(int, Widget *, Widget, Dimension, int);
+static void     LeftPadding();
+static void     RightPadding();
 static void     MakeNewMonth();
 static void     PrimaryPaste();
 static Cardinal DateSum();
+static void     DayBack();
+#ifndef LONG_IS_32_BITS
+static void     YmBack();
+#endif
+static void     ResizeNicely();
 
+#define BORDERW 1
 #define argLD(N,V) { XtSetArg(args[nargs], N, V); nargs++; }
 
 /* ARGSUSED */
 void
 DoWeekly(w, closure, call_data)
-	Widget          w;
-	void *         closure;
-	void *         call_data;
+    Widget          w;
+    void *         closure;
+    void *         call_data;
 {
-	Date            thisday;
+    Date            thisday;
 
-	thisday.day = 0;
-	thisday.month = 0;
-	thisday.year = 0;
-	thisday.wday = 0;
-	NewMonthStrip(&thisday, w, NULL);
+    thisday.day = 0;
+    thisday.month = 0;
+    thisday.year = 0;
+    thisday.wday = 0;
+    NewMonthStrip(&thisday, w, NULL);
 }
 
 
@@ -113,42 +124,42 @@ DoWeekly(w, closure, call_data)
 /* ARGSUSED */
 static void
 MakeNewMonth(w, closure, call_data)
-	Widget          w;
-	void *         closure;
-	void *         call_data;
+    Widget          w;
+    void *         closure;
+    void *         call_data;
 {
-	Date            thisday;
+    Date            thisday;
     Widget          main, header, calendar;
     Arg             args[2];
-	WidgetList      children;
+    WidgetList      children;
     Cardinal        n;
     int             i;
     char            label[50];
 
     /* Destroy old calendar (paned widget), but not the header */
-	XtVaGetValues(parent, XtNchildren, &children, XtNnumChildren, &n, NULL);
-	for (i = 0; i < n; i++) {
-		if (XtClass(children[i]) == panedWidgetClass)
+    XtVaGetValues(parent, XtNchildren, &children, XtNnumChildren, &n, NULL);
+    for (i = 0; i < n; i++) {
+        if (XtClass(children[i]) == panedWidgetClass)
             break;
     }
     XtDestroyWidget(children[i]);
 
-	thisday.year = YrUnpack((Cardinal) closure);
-	thisday.month = MoUnpack((Cardinal) closure);
-	thisday.day = today.day;
+    thisday.year = YrUnpack((Cardinal) closure);
+    thisday.month = MoUnpack((Cardinal) closure);
+    thisday.day = today.day;
 
     /* Reassign callback's closures to the back and next widgets */
     header = XtParent(w);
-	callbacks[0].callback = MakeNewMonth;
+    callbacks[0].callback = MakeNewMonth;
     callbacks[0].closure = (void *) DateSum(&thisday, 1);
-	XtVaSetValues(XtNameToWidget(header, "next"), XtNcallback, callbacks, NULL);
+    XtVaSetValues(XtNameToWidget(header, "next"), XtNcallback, callbacks, NULL);
     callbacks[0].closure = (void *) DateSum(&thisday, -1);
-	XtVaSetValues(XtNameToWidget(header, "back"), XtNcallback, callbacks, NULL);
+    XtVaSetValues(XtNameToWidget(header, "back"), XtNcallback, callbacks, NULL);
 
     sprintf(label, "%s %d\n", appResources.mon[thisday.month], thisday.year);
     XtVaSetValues(XtNameToWidget(header, "month"), XtNlabel, label, NULL);
 
-	NewMonthStrip(&thisday, NULL, header);
+    NewMonthStrip(&thisday, NULL, header);
 }
 
 Dimension
@@ -166,7 +177,6 @@ NewMonthStrip(td, but, attach)
     String     dayStr;
     Cardinal   thisDay, startLoop, numberOfDays;
     Boolean    defaultsAreSet = False, markThisMonth = False;
-    Dimension  borderW = 1;
 
     type = (td->day == 0) ? ME_WEEKLY : ME_MONTHLY;
 
@@ -175,7 +185,7 @@ NewMonthStrip(td, but, attach)
     case ME_MONTHLY:
         FmtDate(td, iconName, sizeof iconName, appResources.stripfmt);
         mon = XtVaCreateWidget(appResources.mon[td->month],
-                panedWidgetClass, parent, 
+                panedWidgetClass, parent,
                 XtNfromVert, attach,
                 XtNtop, XtChainTop,
                 XtNbottom, XtChainBottom,
@@ -187,7 +197,7 @@ NewMonthStrip(td, but, attach)
         /* * Get the map for this year */
         me = GetMonthEntry(td->year, td->month);
         /* * see if we will need to worry about marking today's entry */
-        if (appResources.markToday && td->year == today.year && 
+        if (appResources.markToday && td->year == today.year &&
                 td->month == today.month)
             markThisMonth = True;
         break;
@@ -209,7 +219,7 @@ NewMonthStrip(td, but, attach)
         if (appResources.markToday) markThisMonth = True;
         break;
     }
-    
+
     /* * Create a Viewport, with a panel inside it */
     monvp = XtVaCreateManagedWidget("viewport", viewportWidgetClass, mon,
             XtNshowGrip, False,
@@ -219,35 +229,35 @@ NewMonthStrip(td, but, attach)
             XtNdefaultDistance, 0,
             NULL);
 
-    LeftPadding(thisDay, form, mondt, borderW);
+    LeftPadding(thisDay, form, mondt);
 
-#ifdef	LONG_IS_32_BITS
-	callbacks[0].callback = DayBack;
+#ifdef  LONG_IS_32_BITS
+    callbacks[0].callback = DayBack;
 #else
-	callbacks[0].callback = YmBack;
-	callbacks[1].callback = DayBack;
+    callbacks[0].callback = YmBack;
+    callbacks[1].callback = DayBack;
 #endif
-	for (i = startLoop, total = thisDay; i <= numberOfDays; i++, total++) {
-		dayStr = appResources.sday[thisDay];
+    for (i = startLoop, total = thisDay; i <= numberOfDays; i++, total++) {
+        dayStr = appResources.sday[thisDay];
 #ifdef LONG_IS_32_BITS
-		callbacks[0].closure = (void *) DatePack(thisDay, i, td->month, 
+        callbacks[0].closure = (void *) DatePack(thisDay, i, td->month,
                 td->year);
 #else
-		callbacks[0].closure = (void *) DatePack(td->month, td->year);
-		callbacks[1].closure = (void *) DayPack(thisDay, i);
+        callbacks[0].closure = (void *) DatePack(td->month, td->year);
+        callbacks[1].closure = (void *) DayPack(thisDay, i);
 #endif
 
-		/* Each square in the strip is form containing label - command */
+        /* Each square in the strip is form containing label - command */
         form[thisDay] = XtVaCreateManagedWidget(dayStr, formWidgetClass, mondt,
                 XtNresizable, True,
                 XtNdefaultDistance, 0,
                 XtNfromHoriz, thisDay ? form[thisDay - 1] : NULL,
                 XtNfromVert,  form[thisDay],
-                XtNborderWidth, borderW,
+                XtNborderWidth, BORDERW,
                 NULL);
 
         snprintf(dayNr, 3, "%02d", i);
-		ins->i_day_label[i] = lw = XtVaCreateManagedWidget(dayNr,
+        ins->i_day_label[i] = lw = XtVaCreateManagedWidget(dayNr,
                 labelWidgetClass, form[thisDay],
                 XtNlabel, type == ME_MONTHLY ? dayNr : dayStr,
                 XtNborderWidth, 0,
@@ -259,8 +269,8 @@ NewMonthStrip(td, but, attach)
                 XtNresizable, False,
                 NULL);
 
-		/* This puts text from the file should it exist for this day */
-		ins->i_day_info[i] = lwi = XtVaCreateManagedWidget("info",
+        /* This puts text from the file should it exist for this day */
+        ins->i_day_info[i] = lwi = XtVaCreateManagedWidget("info",
                 commandWidgetClass, form[thisDay],
                 XtNborderWidth, 0,
                 XtNcallback, callbacks,
@@ -276,58 +286,58 @@ NewMonthStrip(td, but, attach)
                 XtNlabel, me->me_have[i] ? me->me_have[i] : "",
                 NULL);
 
-		/* To get a handle on the old values which are lost by
-		 * highlighting we get them after we have created the widget.
-		 * Then we highlight today. */
-		if (markThisMonth &&
-		    ((type == ME_MONTHLY && today.day == i) ||
-		     (type == ME_WEEKLY && today.wday == i))) {
-			XtVaGetValues(lw, 
-                    XtNforeground, &ins->i_col.fg, 
+        /* To get a handle on the old values which are lost by
+         * highlighting we get them after we have created the widget.
+         * Then we highlight today. */
+        if (markThisMonth &&
+            ((type == ME_MONTHLY && today.day == i) ||
+             (type == ME_WEEKLY && today.wday == i))) {
+            XtVaGetValues(lw,
+                    XtNforeground, &ins->i_col.fg,
                     XtNbackground, &ins->i_col.bg,
                     NULL);
-			XtVaSetValues(lw, 
-                    XtNforeground, appResources.today.fg, 
-                    XtNbackground, appResources.today.bg, 
+            XtVaSetValues(lw,
+                    XtNforeground, appResources.today.fg,
+                    XtNbackground, appResources.today.bg,
                     NULL);
-			XtVaGetValues(lwi, 
-                    XtNforeground, &ins->i_col.fg, 
+            XtVaGetValues(lwi,
+                    XtNforeground, &ins->i_col.fg,
                     XtNbackground, &ins->i_col.bg,
                     NULL);
-			XtVaSetValues(lwi, 
-                    XtNforeground, appResources.today.fg, 
-                    XtNbackground, appResources.today.bg, 
+            XtVaSetValues(lwi,
+                    XtNforeground, appResources.today.fg,
+                    XtNbackground, appResources.today.bg,
                     NULL);
-		}
+        }
 
-		/* add translations */
-		if (but2 == NULL) {
-			but2 = XtParseTranslationTable(defTranslations);
-		}
-		XtOverrideTranslations(lwi, but2);
+        /* add translations */
+        if (but2 == NULL) {
+            but2 = XtParseTranslationTable(defTranslations);
+        }
+        XtOverrideTranslations(lwi, but2);
 
-		thisDay = (thisDay + 1) % 7;
+        thisDay = (thisDay + 1) % 7;
 
-		/* * cope with 1752 */
-		if (td->year == 1752 && td->month == 8 && i == 2) {
-			i = 13;
-			numberOfDays += 11;	/* giving back the 11 days */
-		}
-	}
-	ClearCallbacks();
+        /* * cope with 1752 */
+        if (td->year == 1752 && td->month == 8 && i == 2) {
+            i = 13;
+            numberOfDays += 11; /* giving back the 11 days */
+        }
+    }
+    ClearCallbacks();
     switch (type) {
     case ME_MONTHLY:
         /* Create extra padding days if the month does not have six columns */
-        RightPadding(thisDay, form, mondt, borderW, total);
+        RightPadding(thisDay, form, mondt, total);
         ResizeNicely(parent, attach, mon);
         XtManageChild(mon);
         XtOverrideTranslations(parent,
-                XtParseTranslationTable(extTranslations));
+                XtParseTranslationTable(viewportTranslations));
         XtSetKeyboardFocus(parent, parent);
-        return(appResources.squareW * 7 + borderW * 14);
+        return(appResources.squareW * 7 + BORDERW * 14);
     case ME_WEEKLY:
         XtPopup(shell, XtGrabNone);
-        XtOverrideTranslations(shell, 
+        XtOverrideTranslations(shell,
                 XtParseTranslationTable(weekTranslations));
         XtSetKeyboardFocus(shell, shell);
         (void) XSetWMProtocols(XtDisplay(shell), XtWindow(shell), &delWin, 1);
@@ -335,7 +345,7 @@ NewMonthStrip(td, but, attach)
     }
 }
 
-static void 
+static void
 ResizeNicely(parent, header, mon)
     Widget      parent;
     Widget      header;
@@ -360,14 +370,14 @@ ResizeNicely(parent, header, mon)
  */
 Dimension
 wHeight(w)
-	Widget	w;
+    Widget      w;
 {
-	Arg		args[1];
-	Dimension	H;
+    Arg         args[1];
+    Dimension   H;
 
-	XtSetArg(args[0], XtNheight, &H);
-	XtGetValues(w, args, 1);
-	return H;
+    XtSetArg(args[0], XtNheight, &H);
+    XtGetValues(w, args, 1);
+    return H;
 }
 
 /*
@@ -375,10 +385,10 @@ wHeight(w)
  */
 void
 CreateHeaderButtons(dw, td)
-	Widget          dw;
-	Date           *td;
+    Widget          dw;
+    Date           *td;
 {
-	Widget          lw;
+    Widget          lw;
     char            label[256];
     Cardinal        width;
     int             max = 0, i, len;
@@ -415,107 +425,105 @@ CreateHeaderButtons(dw, td)
             XtNborderColor, bg,
             NULL);
     MkDate(lw);
-    
-	/* Help button label help from resources */
-	if (appResources.giveHelp) {
-		callbacks[0].callback = StripHelp;
-		callbacks[0].closure = (void *) 0;
-		lw = XtVaCreateManagedWidget("help", commandWidgetClass, dw,
-                XtNleft, XtChainRight,               
+
+    /* Help button label help from resources */
+    if (appResources.giveHelp) {
+        callbacks[0].callback = StripHelp;
+        callbacks[0].closure = (void *) 0;
+        lw = XtVaCreateManagedWidget("help", commandWidgetClass, dw,
+                XtNleft, XtChainRight,
                 XtNright, XtChainRight,
                 XtNcallback, callbacks,
                 XtNfromHoriz, lw,
                 NULL);
-		ClearCallbacks();
-	}
+        ClearCallbacks();
+    }
 
     /* Today button */
-	callbacks[0].callback = MakeNewMonth;
-	callbacks[0].closure = (void *) DateSum(&today, 0);
-	lw = XtVaCreateManagedWidget("current", commandWidgetClass, dw,
+    callbacks[0].callback = MakeNewMonth;
+    callbacks[0].closure = (void *) DateSum(&today, 0);
+    lw = XtVaCreateManagedWidget("current", commandWidgetClass, dw,
             XtNcallback, (XtArgVal) callbacks,
             XtNfromHoriz, lw,
             XtNleft, XtChainRight,
             XtNright, XtChainRight,
             NULL);
-	ClearCallbacks();
+    ClearCallbacks();
 
     /* Week button */
-	callbacks[0].callback = DoWeekly;
-	lw = XtVaCreateManagedWidget("weekly", commandWidgetClass, dw,
+    callbacks[0].callback = DoWeekly;
+    lw = XtVaCreateManagedWidget("weekly", commandWidgetClass, dw,
             XtNcallback, (XtArgVal) callbacks,
             XtNfromHoriz, lw,
             XtNleft, XtChainRight,
             XtNright, XtChainRight,
             NULL);
-	ClearCallbacks();
+    ClearCallbacks();
 
     /* Memo button */
-	callbacks[0].callback = DoMemo;
-	lw = XtVaCreateManagedWidget("memo", commandWidgetClass, dw,
+    callbacks[0].callback = DoMemo;
+    lw = XtVaCreateManagedWidget("memo", commandWidgetClass, dw,
             XtNcallback, (XtArgVal) callbacks,
             XtNfromHoriz, lw,
             XtNleft, XtChainRight,
             XtNright, XtChainRight,
             NULL);
-	ClearCallbacks();
+    ClearCallbacks();
 
-	/*
-	 * back one month label "<" from resources
-	 */
-	callbacks[0].callback = MakeNewMonth;
-	callbacks[0].closure = (void *) DateSum(td, -1);
-	lw = XtVaCreateManagedWidget("back", commandWidgetClass, dw,
-	        XtNcallback, callbacks,
-	        XtNfromHoriz, lw,
-	        XtNleft, XtChainRight,
-	        XtNright, XtChainRight,
+    /*
+     * back one month label "<" from resources
+     */
+    callbacks[0].callback = MakeNewMonth;
+    callbacks[0].closure = (void *) DateSum(td, -1);
+    lw = XtVaCreateManagedWidget("back", commandWidgetClass, dw,
+            XtNcallback, callbacks,
+            XtNfromHoriz, lw,
+            XtNleft, XtChainRight,
+            XtNright, XtChainRight,
             NULL);
-	ClearCallbacks();
+    ClearCallbacks();
 
-	/*
-	 * On one month label ">" from resources
-	 */
-	callbacks[0].callback = MakeNewMonth;
-	callbacks[0].closure = (void *) DateSum(td, 1);
-	lw = XtVaCreateManagedWidget("next", commandWidgetClass, dw,
-	        XtNcallback, callbacks,
-	        XtNfromHoriz, lw,
-	        XtNleft, XtChainRight,
-	        XtNright, XtChainRight,
+    /*
+     * On one month label ">" from resources
+     */
+    callbacks[0].callback = MakeNewMonth;
+    callbacks[0].closure = (void *) DateSum(td, 1);
+    lw = XtVaCreateManagedWidget("next", commandWidgetClass, dw,
+            XtNcallback, callbacks,
+            XtNfromHoriz, lw,
+            XtNleft, XtChainRight,
+            XtNright, XtChainRight,
             NULL);
-	ClearCallbacks();
+    ClearCallbacks();
 }
 
 /* Create padding days if the first day of the month is not sunday */
 static void
-LeftPadding(thisDay, form, mondt, borderW)
+LeftPadding(thisDay, form, mondt)
     int        thisDay;
     Widget     *form;
     Widget     mondt;
-    Dimension  borderW;
 {
     for (int i = 0; i < thisDay; i++) {
-        form[i] = XtVaCreateManagedWidget("pad", formWidgetClass, mondt, 
+        form[i] = XtVaCreateManagedWidget("pad", formWidgetClass, mondt,
                   XtNresizable, True,
                   XtNwidth, appResources.squareW,
                   XtNheight, appResources.squareH + appResources.labelH,
-                  XtNborderWidth, borderW,
+                  XtNborderWidth, BORDERW,
                   XtNfromHoriz, i ? form[i - 1] : NULL,
                   NULL);
     }
 }
 
 static void
-RightPadding(thisDay, form, mondt, borderW, total)
+RightPadding(thisDay, form, mondt, total)
     int        thisDay;
     Widget     *form;
     Widget     mondt;
-    Dimension  borderW;
     int        total;
 {
     for (; total <= 41; total++) {
-        form[thisDay] = XtVaCreateManagedWidget("pad", 
+        form[thisDay] = XtVaCreateManagedWidget("pad",
                 formWidgetClass, mondt,
                 XtNresizable, True,
                 XtNdefaultDistance, 0,
@@ -523,7 +531,7 @@ RightPadding(thisDay, form, mondt, borderW, total)
                 XtNheight, appResources.squareH + appResources.labelH,
                 XtNfromHoriz, thisDay ? form[thisDay - 1] : NULL,
                 XtNfromVert,  form[thisDay],
-                XtNborderWidth, borderW,
+                XtNborderWidth, BORDERW,
                 NULL);
         thisDay = (thisDay + 1) % 7;
     }
@@ -533,56 +541,56 @@ RightPadding(thisDay, form, mondt, borderW, total)
  * appropriate highlights */
 void
 ChangeHighlight(old, new)
-	Date           *old;
-	Date           *new;
+    Date           *old;
+    Date           *new;
 {
-	register Instance *ins;
-	Arg             args[5];
-	Cardinal        nargs;
+    register Instance *ins;
+    Arg             args[5];
+    Cardinal        nargs;
 
-	for (ins = FindInstanceList(old); ins; ins = ins->i_next) {
-		nargs = 0;
-		argLD(XtNforeground, ins->i_col.fg);
-		argLD(XtNbackground, ins->i_col.bg);
-		XtSetValues(ins->i_day_label[old->day], args, nargs);
-		XtSetValues(ins->i_day_info[old->day], args, nargs);
-	}
+    for (ins = FindInstanceList(old); ins; ins = ins->i_next) {
+        nargs = 0;
+        argLD(XtNforeground, ins->i_col.fg);
+        argLD(XtNbackground, ins->i_col.bg);
+        XtSetValues(ins->i_day_label[old->day], args, nargs);
+        XtSetValues(ins->i_day_info[old->day], args, nargs);
+    }
 
-	for (ins = FindInstanceList(new); ins; ins = ins->i_next) {
-		nargs = 0;
-		argLD(XtNforeground, &ins->i_col.fg);
-		argLD(XtNbackground, &ins->i_col.bg);
-		XtGetValues(ins->i_day_label[new->day], args, nargs);
-		XtGetValues(ins->i_day_info[new->day], args, nargs);
+    for (ins = FindInstanceList(new); ins; ins = ins->i_next) {
+        nargs = 0;
+        argLD(XtNforeground, &ins->i_col.fg);
+        argLD(XtNbackground, &ins->i_col.bg);
+        XtGetValues(ins->i_day_label[new->day], args, nargs);
+        XtGetValues(ins->i_day_info[new->day], args, nargs);
 
-		nargs = 0;
-		argLD(XtNforeground, appResources.today.fg);
-		argLD(XtNbackground, appResources.today.bg);
-		XtSetValues(ins->i_day_label[new->day], args, nargs);
-		XtSetValues(ins->i_day_info[new->day], args, nargs);
-	}
+        nargs = 0;
+        argLD(XtNforeground, appResources.today.fg);
+        argLD(XtNbackground, appResources.today.bg);
+        XtSetValues(ins->i_day_label[new->day], args, nargs);
+        XtSetValues(ins->i_day_info[new->day], args, nargs);
+    }
 }
 
-void 
+void
 PopUpMemo(w, event, params, numb)
-        Widget        	w;
+        Widget          w;
         XSelectionEvent *event;
-        String         *params;
-        Cardinal       *numb;
+        String          *params;
+        Cardinal        *numb;
 {
-    if ((w = XtNameToWidget(w, "header.memo"))) 
+    if ((w = XtNameToWidget(w, "header.memo")))
         XtCallCallbacks(w, XtNcallback, NULL);
-    else 
+    else
         fprintf(stderr, "xcalim: Could not find button memo.\n");
 }
 
 /* Handles 1..7 input on a week view */
 void
 WeekDay(w, event, params, numb)
-        Widget        	w;
+        Widget          w;
         XSelectionEvent *event;
-        String         *params;
-        Cardinal       *numb;
+        String          *params;
+        Cardinal        *numb;
 {
     char widgetName[256];
     int i = atoi(*params);
@@ -593,22 +601,36 @@ WeekDay(w, event, params, numb)
         fprintf(stderr, "xcalim: Could not find widget for WeekDay action\n");
 }
 
+void
+ScrollCal(w, event, params, numb)
+        Widget          w;
+        XSelectionEvent *event;
+        String          *params;
+        Cardinal        *numb;
+{
+    if ((w = XtNameToWidget(w, "*vertical"))) {
+        int multiple = atoi(*params);
+        int displace = appResources.labelH + appResources.squareH + 2;
+        XtCallCallbacks(w, XtNscrollProc, (XtPointer) (displace * multiple));
+    }
+}
+
 /* Scan number typed by user. If it was the first number, buffer it. Else,
 combine it with the previous to form the whole number and open the corresponding
 day edit window */
 void
 Nr(w, event, params, numb)
-        Widget        	w;
+        Widget          w;
         XSelectionEvent *event;
-        String         *params;
-        Cardinal       *numb;
+        String          *params;
+        Cardinal        *numb;
 {
     static Widget header, label, info;
     static int expect = 0;   //Are we expecting a 2nd key or is this the 1st?
     static int day;          //Day number under construction
     static Pixel fg, bg;     //Fore and background of the header
     int arg = atoi(*params);
-    
+
     if (expect == 0) {
         if (arg >= 0) { //Number pressed
             /* Reverse header color when the user typed only the first number */
@@ -649,60 +671,60 @@ Nr(w, event, params, numb)
  */
 void
 LoadFromPrimary(w, event, params, numb)
-        Widget        	w;
+        Widget          w;
         XSelectionEvent *event;
-        String         *params;
-        Cardinal       *numb;
+        String          *params;
+        Cardinal        *numb;
 {
-	XtGetSelectionValue(w, XA_PRIMARY, XA_STRING, PrimaryPaste, 0, 
+    XtGetSelectionValue(w, XA_PRIMARY, XA_STRING, PrimaryPaste, 0,
             XtLastTimestampProcessed(XtDisplay(w)));
 }
 
 static void
 PrimaryPaste(w, xcd, sel, seltype, val, len, fmt)
-	Widget		w;
-	XtPointer	xcd;
-	Atom		*sel;
-	Atom		*seltype;
-	XtPointer	val;
-	unsigned long	*len;
-	int		*fmt;	
-{	
-	String		s;
-	int		n;
-	Arg             args[1];
-	Cardinal	v;
-	XtCallbackRec	*cb;
-	Date		da;
+    Widget          w;
+    XtPointer       xcd;
+    Atom            *sel;
+    Atom            *seltype;
+    XtPointer       val;
+    unsigned long   *len;
+    int             *fmt;
+{
+    String          s;
+    int             n;
+    Arg             args[1];
+    Cardinal        v;
+    XtCallbackRec   *cb;
+    Date            da;
 
-	/* deal with arguments to get the text */
-	if (*seltype != XA_STRING)
-		n = 0;
-	else
-		n = (*len) * (*fmt/8);
-	if (n == 0)
-		return;
+    /* deal with arguments to get the text */
+    if (*seltype != XA_STRING)
+        n = 0;
+    else
+        n = (*len) * (*fmt/8);
+    if (n == 0)
+        return;
 
-	s = (String) XtMalloc(n+1);
-	if (n > 0)
-		memcpy(s, (char *)val, n);
-	s[n] = 0;
-	XtFree(val);
+    s = (String) XtMalloc(n+1);
+    if (n > 0)
+        memcpy(s, (char *)val, n);
+    s[n] = 0;
+    XtFree(val);
 
-	/* get closure data to find the date */
-	XtSetArg(args[0], XtNcallback, &cb);
-	XtGetValues(w, args, 1);
-	v = (Cardinal) cb->closure;
-	da.month = MoUnpack(v),
-	da.year = YrUnpack(v);
+    /* get closure data to find the date */
+    XtSetArg(args[0], XtNcallback, &cb);
+    XtGetValues(w, args, 1);
+    v = (Cardinal) cb->closure;
+    da.month = MoUnpack(v),
+    da.year = YrUnpack(v);
 #ifndef LONG_IS_32_BITS
-	cb++;
-	v = (Cardinal) cb->closure;
+    cb++;
+    v = (Cardinal) cb->closure;
 #endif
-	da.day = DyUnpack(v);
-	da.wday = WdUnpack(v);
-	/* Add text to day file (code in xcalim_edit.c) */
-	AppendText(w, &da, s);
+    da.day = DyUnpack(v);
+    da.wday = WdUnpack(v);
+    /* Add text to day file (code in xcalim_edit.c) */
+    AppendText(w, &da, s);
 }
 
 
@@ -710,10 +732,10 @@ PrimaryPaste(w, xcd, sel, seltype, val, len, fmt)
 actions if they don't require resource cleanup. */
 void
 PopDownShell (w, event, params, numb)
-	Widget          w;
-	XEvent         *event;
-	String         *params;
-	Cardinal       *numb;
+    Widget          w;
+    XEvent         *event;
+    String         *params;
+    Cardinal       *numb;
 {
     XtPopdown(w);
     XtDestroyWidget(w);
@@ -725,25 +747,25 @@ PopDownShell (w, event, params, numb)
  */
 static          Cardinal
 DateSum(td, inx)
-	Date           *td;
-	int             inx;
+    Date           *td;
+    int             inx;
 {
-	int             m, y;
+    int             m, y;
 
-	m = td->month;
-	y = td->year;
-	m += inx;
-	if (m < 0) {
-		m = 11;
-		y--;
-	} else if (m > 11) {
-		m = 0;
-		y++;
-	}
+    m = td->month;
+    y = td->year;
+    m += inx;
+    if (m < 0) {
+        m = 11;
+        y--;
+    } else if (m > 11) {
+        m = 0;
+        y++;
+    }
 #ifdef LONG_IS_32_BITS
-	return (DatePack(0, 0, m, y));
+    return (DatePack(0, 0, m, y));
 #else
-	return (DatePack(m, y));
+    return (DatePack(m, y));
 #endif
 }
 
@@ -754,28 +776,28 @@ DateSum(td, inx)
 /* ARGSUSED */
 static void
 DayBack(w, closure, call_data)
-	Widget          w;
-	void *         closure;
-	void *         call_data;
+    Widget          w;
+    void *         closure;
+    void *         call_data;
 {
 #ifdef LONG_IS_32_BITS
-	callb.month = MoUnpack((Cardinal) closure);
-	callb.year = YrUnpack((Cardinal) closure);
+    callb.month = MoUnpack((Cardinal) closure);
+    callb.year = YrUnpack((Cardinal) closure);
 #endif
-	callb.day = DyUnpack((Cardinal) closure);
-	callb.wday = WdUnpack((Cardinal) closure);
-	StartEditing(w, &callb, NULL);
+    callb.day = DyUnpack((Cardinal) closure);
+    callb.wday = WdUnpack((Cardinal) closure);
+    StartEditing(w, &callb, NULL);
 }
 
 #ifndef LONG_IS_32_BITS
 /* ARGSUSED */
 static void
 YmBack(w, closure, call_data)
-	Widget          w;
-	void *         closure;
-	void *         call_data;
+    Widget          w;
+    void *         closure;
+    void *         call_data;
 {
-	callb.month = MoUnpack((Cardinal) closure);
-	callb.year = YrUnpack((Cardinal) closure);
+    callb.month = MoUnpack((Cardinal) closure);
+    callb.year = YrUnpack((Cardinal) closure);
 }
 #endif

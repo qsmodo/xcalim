@@ -71,13 +71,15 @@ consists of a header bar and the calendar.
 A button in the header can be activated with a mouse click
 or by using a shortcut from the table:
 .EX
-    Button   Shortcut  Action
-    <        Left,  k  Previous month's calendar
-    >        Right, j  Next month's calendar
-    Memo     m         Open the memo pad
-    Weekly   w         Open the weekly recurrent events window
-    Current  c         Jump to the current month calendar
-    Help     h, F1     Jump to the current month calendar
+    Button   Shortcut          Action
+    <        Left,  k          Previous month's calendar
+    >        Right, j          Next month's calendar
+    Memo     m                 Open the memo pad
+    Weekly   w                 Open the weekly recurrent events window
+    Current  c                 Jump to the current month calendar
+    Help     h, F1             Get help dialog
+             Down, J, Up, K    Scroll one row
+             PgDn, G, PgUp, g  Scroll to bottom/top
 .EE
 .LP
 To add an appointment to a day, just click its box or directly

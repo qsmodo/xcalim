@@ -229,6 +229,7 @@ static XtActionsRec appActions[] = {
     {"StripHelp",       StripHelp      },
     {"DoWeekly",        DoWeekly       },
     {"Nr",              Nr             },
+    {"ScrollCal",       ScrollCal      },
     {"WeekDay",         WeekDay        },
     {"PopUpMemo",       PopUpMemo      },
 };
