@@ -58,7 +58,6 @@ struct resources
 	Boolean initialEdit;	/* Pop up today's Edit on startup if True */
 	Boolean	initialMemo;	/* Pop up memo box on start */
 	String	format;		/* Date format string to use in the main box */
-	String	stripfmt;	/* Date format to use at the top of strips */
 	String	editfmt;	/* Date format in edit windows */
 	String	mon[12];	/* Long month names */
 	String	smon[12];	/* Short month names */

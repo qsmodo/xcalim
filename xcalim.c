@@ -19,7 +19,6 @@ static XrmOptionDescRec Options[] = {
     {"-daemon", "daemon", XrmoptionNoArg, (void *) "TRUE"},
     {"-alarmscan", "alarmScan", XrmoptionNoArg, (void *) "TRUE"},
     {"-format", "format", XrmoptionSepArg, NULL},
-    {"-stripfmt", "stripFmt", XrmoptionSepArg, NULL},
     {"-editfmt", "editFmt", XrmoptionSepArg, NULL},
     {"-clocktick", "clockTick", XrmoptionSepArg, NULL},
     {"-u", "otherUser", XrmoptionSepArg, NULL},
@@ -62,8 +61,6 @@ static XtResource Resources[] = {
     offset(initialMemo), XtRString, "False"},
     {"format", "Format", XtRString, sizeof(String),
     offset(format), XtRString, "%H:%M:%S"},
-    {"stripFmt", "StripFmt", XtRString, sizeof(String),
-    offset(stripfmt), XtRString, "%B %Y"},
     {"editFmt", "EditFmt", XtRString, sizeof(String),
     offset(editfmt), XtRString, "%A %d %B %Y"},
     {"clockTick", "ClockTick", XtRInt, sizeof(int),
@@ -371,7 +368,6 @@ AlterTitles()
     /* I am unsure whether it is safe to free these strings */
 #define cstr(v) { strcpy(fmt, v); strcat(fmt, us); v = XtNewString(fmt); }
     cstr(appResources.format);
-    cstr(appResources.stripfmt);
     cstr(appResources.editfmt);
 #undef cstr
 }

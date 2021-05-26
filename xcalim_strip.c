@@ -170,7 +170,7 @@ NewMonthStrip(td, but, attach)
 {
     static XtTranslations but2;
     Widget     shell, mon, dw, lw, lwi, form[7] = {NULL}, monvp, mondt;
-    char       iconName[256], dayNr[3];
+    char       dayNr[3];
     int        type, i, total = 0;
     MonthEntry *me;
     Instance   *ins;
@@ -183,7 +183,6 @@ NewMonthStrip(td, but, attach)
     /* There are lots of differences between Months and weekly strips here */
     switch (type) {
     case ME_MONTHLY:
-        FmtDate(td, iconName, sizeof iconName, appResources.stripfmt);
         mon = XtVaCreateWidget(appResources.mon[td->month],
                 panedWidgetClass, parent,
                 XtNfromVert, attach,
@@ -194,9 +193,9 @@ NewMonthStrip(td, but, attach)
         thisDay = FirstDay(td->month, td->year);
         numberOfDays = NumberOfDays(td->month, td->year);
         startLoop = 1;
-        /* * Get the map for this year */
+        /* Get the map for this year */
         me = GetMonthEntry(td->year, td->month);
-        /* * see if we will need to worry about marking today's entry */
+        /* See if we will need to worry about marking today's entry */
         if (appResources.markToday && td->year == today.year &&
                 td->month == today.month)
             markThisMonth = True;
@@ -204,12 +203,11 @@ NewMonthStrip(td, but, attach)
     case ME_WEEKLY:
         shell = XtVaCreatePopupShell("weekly",
                 topLevelShellWidgetClass, toplevel,
-                XtNiconName, iconName,
                 NULL);
         if (but && XtIsSubclass(but, commandWidgetClass))
             ButtonOff(but, shell);
         ins = RegisterMonth(0, 0, shell);
-        mon = XtVaCreateManagedWidget(iconName, panedWidgetClass, shell, NULL);
+        mon = XtVaCreateManagedWidget("weekpan", panedWidgetClass, shell, NULL);
         thisDay = 0;
         numberOfDays = 6;   /* test is <= */
         startLoop = 0;
@@ -220,7 +218,7 @@ NewMonthStrip(td, but, attach)
         break;
     }
 
-    /* * Create a Viewport, with a panel inside it */
+    /* Create a Viewport, with a panel inside it */
     monvp = XtVaCreateManagedWidget("viewport", viewportWidgetClass, mon,
             XtNshowGrip, False,
             XtNallowVert, True,
@@ -310,7 +308,7 @@ NewMonthStrip(td, but, attach)
                     NULL);
         }
 
-        /* add translations */
+        /* Add translations */
         if (but2 == NULL) {
             but2 = XtParseTranslationTable(defTranslations);
         }
@@ -318,7 +316,7 @@ NewMonthStrip(td, but, attach)
 
         thisDay = (thisDay + 1) % 7;
 
-        /* * cope with 1752 */
+        /* Cope with 1752 *//* TODO: Do we really need this? */
         if (td->year == 1752 && td->month == 8 && i == 2) {
             i = 13;
             numberOfDays += 11; /* giving back the 11 days */
