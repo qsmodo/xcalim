@@ -46,7 +46,6 @@ static XtCallbackRec callbacks[] = {
 static void   AlarmScan();
 static void   FreeAlarmList();
 static void   setCall();
-static void   beep();
 static void   AddAlarm();
 static void   DisplayAlarmWindow();
 static void   DestroyAlarm();
@@ -613,7 +612,6 @@ AlarmEvent(client_data, id)
                 }
                 if (al->isAction == False) {
                     DisplayAlarmWindow(al->alarm_state, al->alarm, al->what);
-                    beep(); /* notify the user */
                 } else {
                     cmd = CreateCommand(al->what, NULL);
                     system(cmd);
@@ -669,18 +667,6 @@ CreateCommand(cmd, arg)
         *d++ = '\0';
     }
     return buf;
-}
-
-static void
-beep()
-{
-    register Display *dpy = XtDisplay(toplevel);
-    int              i;
-
-    for (i = 0; i < appResources.nbeeps; i++) {
-        XBell(dpy, appResources.volume);
-        sleep(1);
-    }
 }
 
 static void

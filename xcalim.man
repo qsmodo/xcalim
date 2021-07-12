@@ -376,14 +376,6 @@ When it detects that the file is altered, then
 it will rebuild the internal alarm list.
 Default: 59.
 .TP
-.B Nbeeps
-When an alarm window is popped up, it is accompanied by 'Nbeeps' beeps.
-Might not work on modern hardware.
-Default: 3.
-.TP
-.B Volume
-Control the loudness of the beep. Default: 50.
-.TP
 .B Countdown
 contains a comma separated string of numbers; for example: 10,5,0.
 The string allows the user to customise warning alarms: so in the

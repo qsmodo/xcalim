@@ -74,8 +74,6 @@ struct resources
 	XtIntervalId interval_id;/* store XtAddTimeOut value */
 	int	clocktick;	/* how often the toplevel widget is polled */
 	int	update;		/* interval between peeks (60 secs) */
-	int	volume;		/* how loud to beep the alarm 0-100 */
-	int	nbeeps;		/* how many beeps for an alarm ? */
 	int	autoquit;	/* Automatically delete message boxes */
 	String	countdown;	/* Comma separated countdown string for alarms */
 	String	cmd;		/* command to execute for every alarm */
