@@ -498,9 +498,9 @@ Input focus can be wrong if multiple edit windows are mapped simultaneously.
 .PP
 .SH AUTHORS
 .LP
-Qsmodo <qsmodo@github.com>        \- Xcalim
+Qsmodo <github.com/qsmodo>        \- Xcalim
 .PP
-Peter Collinson, Hillside Systems \- Xcalim
+Peter Collinson, Hillside Systems \- Xcal
 .PP
 This product includes software developed by the University of
 California, Berkeley and its contributors.

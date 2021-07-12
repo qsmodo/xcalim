@@ -1,4 +1,4 @@
-# Xcalim: Simple calendar with alarms for the X Window System
+# Xcalim: Calendar with alarms for the X Window System
 
 ![Standard Xcalim interface](xcalimDefault.png)
 ![Colorful Xcalim interface](xcalimColor.png)
@@ -22,8 +22,8 @@ time stamps, which are used to trigger alarms (if activated). For example,
 
     18:10 John Doe's wedding
 
-triggers that alarm at 18:10. Variations such as 1810, 18.10, 610pm 0610PM, etc. also work.
-Additional alarms may be set, say, 5 min in advance of each event.
+Additional alarms may be set, say, 5 min in advance of each event, and commands
+can be set to run to each alarm.
 
 It can run as a `-daemon`, i.e., without spawning a initial window, 
 which is useful to monitor and issue alarms without the need to keep a window open.
@@ -47,6 +47,13 @@ here. See `README.contents` and their manpages for more details on what they do.
 
 ### Similar software worth considering:
 
+**[Remind][5]**
+
+The best one if you don't want a GUI (although a Tk GUI is also available).
+I failed to write an alarm to trigger at both x and 0 minutes before,
+but perhaps I didn't try hard enough. I missed a 2d view of the day/week as in
+Plan below, which I plan to add to Xcalim.
+
 **[Plan][3]**
 
 A truly amazing Motif calendar with day, week, month and year views. Very advanced
@@ -65,10 +72,11 @@ Cannot rely solely on keyboard either.
 ### Notes
 1: I would keep the name Xcal but it clashes with various unrelated software.
 Xcalim, on the other hand, seems unused.  
-2: For X-resources (mainly colors and fonts) customization, [Getting the most out of X-resources][5] is a useful article.
+2: For X-resources (mainly colors and fonts) customization, [Getting the most out of X-resources][6] is a useful article.
 
 [1]: https://en.wikipedia.org/wiki/X_Athena_Widgets
 [2]: https://packages.debian.org/buster/xcal
 [3]: https://www.bitrot.de/plan.html
 [4]: https://en.wikipedia.org/wiki/Ical_(Unix)
-[5]: https://www.linuxjournal.com/article/1154
+[5]: https://dianne.skoll.ca/projects/remind/
+[6]: https://www.linuxjournal.com/article/1154
