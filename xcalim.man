@@ -127,7 +127,8 @@ the middle button on the day box in the
 .IR main\ window.
 
 .SH ALARMS
-Alarms are fired by displaying a dialog box.
+The user can choose to pop-up a dialog window (default) or run a
+command when an alarm is fired.
 .LP
 To specify an alarm,
 the time format is one of 
@@ -166,27 +167,24 @@ Some legal examples are:
     18 Leave work
 .fi
 .LP
-Timed command execution from the data file is supported.
-To trigger a command, the data part of the line starts
-with an exclamation mark:
+Command execution from the data file is supported if
+.I ExecAlarms
+is true.
+To trigger a command, the data part of the line must start
+with an exclamation mark or with the string '%cron':
 .br
 
-    430pm !xmessage 'This is your alarm!'
+    430pm !xmessage 'This is your alarm'
+    430pm %cron xmessage 'This is your alarm'
 .LP
-The exclamation mark can also be replaced by the string '%cron'.
-To make 
+The native pop-up window is disabled when this is used.
+
 .I Xcalim
-execute a command whenever an alarm is triggered, see the
+can also execute a fixed command whenever an alarm is triggered without
+suppressing the pop-up window with the
 .I Cmd
-resource below.
+resource.
 .LP
-You can make a time like 2:30 mean 14:30 by setting the resource
-.I AlarmWarp
-to be true.
-If this is the case, an alarm hour will be promoted to a PM time if it is found
-to be between the range of
-zero and the value of the resource
-.IR MinAlarmWarp .
 .SH DIALOGS
 Pop-up dialogs with Yes/No questions can be responded to using the mouse or
 or the keyboard by pressing y or n.
@@ -360,8 +358,16 @@ Default: True.
 .TP
 .B ExecAlarms
 if the alarm system is active,
-whether or not to invoke timed-execution commands.
+whether or not
+.IR %cron \ and\  ! \ introduce
+commands as described in
+.BR ALARMS .
 Default: True.
+.TP
+.B Cmd
+This resource contains a command that is executed by calling the shell
+when every alarm is triggered.
+The command is passed the contents of the data line as one argument.
 .TP
 .B Update
 scan the calendar files every 'update' seconds
@@ -377,11 +383,6 @@ Default: 3.
 .TP
 .B Volume
 Control the loudness of the beep. Default: 50.
-.TP
-.B Cmd
-This resource contains a command that is executed by calling the shell
-when every alarm is triggered.
-The command is passed the contents of the data line as one argument.
 .TP
 .B Countdown
 contains a comma separated string of numbers; for example: 10,5,0.
@@ -454,7 +455,7 @@ A short form of the month name - done this way because I doubt that
 writing with %3s works in all languages.
 Changing this resource means that the data file will no longer be
 compatible with
-.I xcalendar .
+.IR xcalendar .
 .TP
 .B Sunday
 .B Monday

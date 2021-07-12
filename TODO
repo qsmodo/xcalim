@@ -7,6 +7,8 @@ implement but ir is a must-have feature for me.
 
 + Countdown timer.
 
++ Put scrollbar when needed in the alarm window.
+
 > Subwidgets on the edit window for selecting alarm times separatedly from
 the appointment description.
 

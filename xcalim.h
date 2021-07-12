@@ -81,9 +81,6 @@ struct resources
 	String	cmd;		/* command to execute for every alarm */
 	String	alarmleft;	/* string containing a message - %d mins left */
 	String	alarmnow;	/* string containing a message - Now! */
-	Boolean	alarmWarp;	/* whether to take times from 0:XX - */
-				/* minAlarmWarp:XX as PM */
-	int	minAlarmWarp;	/* time threshold for alarmWarp */
 	String	private;	/* string containing the word - Private */
 	String	already;	/* date format for "Already editing day month year" */
 	String	alreadyWeekly;	/* date format for "Already editing day" */

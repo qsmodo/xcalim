@@ -352,15 +352,8 @@ AddAlarm(mnow, exec, hr, mn, hrstr, rem)
     int             zero = 0;
     int            *p;
 
-    if (exec || countDownCt == 0) {
-        loop = 1;
-        p = &zero;
-    } else {
-        loop = countDownCt;
-        p = countDown;
-    }
-
-    for (; loop--; p++) {
+    p = countDown;
+    for (loop = countDownCt; loop--; p++) {
         al_hr = hr;
         al_mn = mn;
         if (*p) {
@@ -536,16 +529,6 @@ readDataLine(fin, hrp, minp, timestr, remline)
         *destp++ = c;
         *destp = '\0';
     }
-    /*
-     * idea from Marc Pawliger
-     * if you don't give an am or pm, then hours from 0 to minAlarmWarp
-     * is treated as a pm time
-     */
-    if (appResources.alarmWarp == True &&
-        hr <= appResources.minAlarmWarp &&
-        appResources.minAlarmWarp < 12 &&
-        foundampm == False)
-        hr += 12;
     *hrp = hr;
     *minp = mn;
     return 1;
@@ -623,7 +606,6 @@ AlarmEvent(client_data, id)
          */
         while (al) {
             if (tnow == al->alarm_mm) {
-
                 if (appResources.cmd != NULL) {
                     cmd = CreateCommand(appResources.cmd, al->what);
                     system(cmd);
